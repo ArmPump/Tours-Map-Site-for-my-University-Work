@@ -1,0 +1,1596 @@
+/* ========== ОБЩИЕ СТИЛИ ========== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    overflow: hidden;
+    background: #0a0e27;
+    color: #fff;
+    margin: 0; /* Убираем margin */
+    padding: 0; /* Убираем padding */
+}
+
+/* Убираем белые линии по бокам */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden; /* Запрещаем скролл страницы */
+    background: #0a0e27; /* Цвет фона (океана) */
+}
+
+/* Пульсация для значков */
+@keyframes pulse {
+    0%, 100% {
+        r: 35;
+        opacity: 0.6;
+    }
+    50% {
+        r: 40;
+        opacity: 0.2;
+    }
+}
+
+/* Страны с турами */
+.country-path.has-tours {
+    cursor: pointer;
+    /* Убираем CSS анимацию, используем D3 transitions */
+}
+
+
+
+/* Значки туров должны быть поверх всего */
+.tour-badges-group {
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.tour-badge {
+    pointer-events: none;
+}
+
+
+
+
+/* ========== MODERN HEADER (БЕЗ АРТЕФАКТОВ) ========== */
+.modern-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 72px;
+    background: rgba(10, 14, 39, 0.98); /* Более непрозрачный */
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 1000;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3); /* Тень вместо размытых краёв */
+}
+
+.header-content {
+    max-width: 100%; /* Было 1400px - это создавало боковые отступы */
+    margin: 0 auto;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+}
+
+/* ========== LOGO (AIDA стратегия) ========== */
+/* Attention (Внимание) - яркий, заметный дизайн */
+.logo-section {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 8px 16px;
+    border-radius: 16px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Interest (Интерес) - интерактивность при hover */
+.logo-section:hover {
+    transform: translateY(-3px) scale(1.02);
+    background: rgba(102, 126, 234, 0.1);
+}
+
+.logo-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.logo-section:hover::before {
+    left: 100%;
+}
+
+/* Desire (Желание) - привлекательная анимация */
+.logo-icon {
+    font-size: 36px;
+    position: relative;
+    filter: drop-shadow(0 0 25px rgba(102, 126, 234, 0.8));
+    animation: logoFloat 4s ease-in-out infinite, logoRotate 20s linear infinite;
+    transition: all 0.3s ease;
+}
+
+@keyframes logoFloat {
+    0%, 100% {
+        transform: translateY(0px) scale(1);
+    }
+    50% {
+        transform: translateY(-8px) scale(1.05);
+    }
+}
+
+@keyframes logoRotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.logo-section:hover .logo-icon {
+    animation: logoSpin 0.6s ease-in-out;
+    filter: drop-shadow(0 0 35px rgba(102, 126, 234, 1));
+}
+
+@keyframes logoSpin {
+    0% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(180deg) scale(1.15); }
+    100% { transform: rotate(360deg) scale(1); }
+}
+
+/* Action (Действие) - призыв к клику */
+.logo-text {
+    font-size: 26px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 30%, #f093fb 60%, #667eea 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.8px;
+    animation: gradientShift 3s ease infinite;
+    position: relative;
+    text-shadow: 0 0 30px rgba(102, 126, 234, 0.5);
+}
+
+@keyframes gradientShift {
+    0%, 100% { background-position: 0% center; }
+    50% { background-position: 100% center; }
+}
+
+.logo-section:hover .logo-text {
+    animation: gradientShift 1s ease infinite, textGlow 0.5s ease;
+}
+
+@keyframes textGlow {
+    0%, 100% {
+        filter: brightness(1);
+    }
+    50% {
+        filter: brightness(1.3) drop-shadow(0 0 20px rgba(102, 126, 234, 0.8));
+    }
+}
+
+/* Navigation */
+.header-nav {
+    display: flex;
+    gap: 8px;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.nav-link:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-1px);
+}
+
+.nav-link svg {
+    transition: transform 0.3s ease;
+}
+
+.nav-link:hover svg {
+    transform: scale(1.1);
+}
+
+/* Header Actions */
+.header-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.lang-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.9);
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.lang-toggle:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.profile-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.profile-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+}
+
+/* ========== КАРТА (БЕЗ ГРАНИЦ И ЛИНИЙ) ========== */
+#mapContainer {
+    position: absolute; /* Используем absolute вместо relative */
+    top: 0;
+    left: 0;
+    width: 100vw; /* 100% ширины вьюпорта */
+    height: 100vh; /* 100% высоты вьюпорта */
+    margin: 0;
+    padding: 0;
+    z-index: 1; /* Карта на заднем плане */
+    background: #0a0e27; /* Фон совпадает с цветом океана */
+}
+
+#worldMap {
+    width: 100%;
+    height: 100%;
+    cursor: grab;
+    display: block;
+    border: none;
+    outline: none;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+#worldMap:active {
+    cursor: grabbing;
+}
+
+/* Убираем ВСЕ линии и границы */
+.country-path {
+    stroke: none; /* Нет обводки */
+    stroke-width: 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    opacity: 0.85;
+    vector-effect: non-scaling-stroke; /* Предотвращает артефакты при масштабировании */
+}
+
+.country-path:hover {
+    opacity: 1;
+    filter: brightness(1.25) saturate(1.2) drop-shadow(0 8px 20px rgba(0,0,0,0.4));
+    stroke: rgba(255, 255, 255, 0.3); /* Только при hover */
+    stroke-width: 1;
+}
+
+.country-label {
+    font-size: 10px;
+    font-weight: 600;
+    fill: rgba(255, 255, 255, 0.9);
+    pointer-events: none;
+    text-anchor: middle;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8), 0 0 10px rgba(0,0,0,0.5);
+}
+
+
+/* ========== COUNTRY INFO PANEL ========== */
+.country-info-panel {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: rgba(10, 14, 39, 0.95);
+    backdrop-filter: blur(20px);
+    padding: 20px 28px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    opacity: 0;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    z-index: 999;
+    min-width: 280px;
+}
+
+.country-info-panel.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.country-info-content h3 {
+    color: #fff;
+    margin-bottom: 12px;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.country-tours-count {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.country-tours-count svg {
+    color: #667eea;
+}
+
+/* ========== ZOOM CONTROLS ========== */
+.zoom-controls {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 1000;
+}
+
+.zoom-btn {
+    width: 48px;
+    height: 48px;
+    background: rgba(10, 14, 39, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.zoom-btn:hover {
+    transform: scale(1.05);
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.zoom-btn svg {
+    stroke-width: 2.5;
+}
+
+/* ========== МОДАЛЬНОЕ ОКНО АВТОРИЗАЦИИ ========== */
+.modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(10, 14, 39, 0.98);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    z-index: 1000;
+    width: 420px;
+    max-width: 90%;
+}
+
+.modal.show {
+    display: block;
+    animation: modalAppear 0.3s ease;
+}
+
+@keyframes modalAppear {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -60%);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+.modal-header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.modal-title {
+    font-size: 28px;
+    color: #fff;
+    margin-bottom: 8px;
+    font-weight: 700;
+}
+
+.modal-subtitle {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 14px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 14px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    font-size: 14px;
+    color: #fff;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.08);
+    border-color: #667eea;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+}
+
+.submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.toggle-mode {
+    text-align: center;
+    margin-top: 24px;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 14px;
+}
+
+.toggle-mode a {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.toggle-mode a:hover {
+    text-decoration: underline;
+}
+
+.close-modal {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close-modal:hover {
+    color: #fff;
+}
+
+/* ========== МОДАЛЬНОЕ ОКНО ПРОФИЛЯ ========== */
+.profile-modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(10, 14, 39, 0.98);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    z-index: 1000;
+    width: 85vw;
+    max-width: 1200px;
+    max-height: 85vh;
+    overflow-y: auto;
+}
+
+.profile-modal.show {
+    display: block;
+    animation: modalAppear 0.3s ease;
+}
+
+.profile-header {
+    display: flex;
+    gap: 32px;
+    margin-bottom: 40px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ========== АВАТАРКА С ЗАГРУЗКОЙ ========== */
+.profile-avatar-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.profile-avatar-wrapper {
+    position: relative;
+    width: 140px;
+    height: 140px;
+}
+
+.profile-avatar {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 56px;
+    font-weight: 700;
+    box-shadow: 0 8px 30px rgba(102, 126, 234, 0.4);
+    border: 4px solid rgba(255, 255, 255, 0.1);
+}
+
+.profile-avatar-image {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+.avatar-upload-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 10px 18px;
+    border-radius: 12px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.avatar-upload-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+/* ========== РЕДАКТИРУЕМОЕ ИМЯ ========== */
+.profile-info-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.profile-info-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.profile-info-label {
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+    min-width: 140px;
+    font-size: 14px;
+}
+
+.profile-info-value {
+    flex: 1;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: #fff;
+    font-size: 15px;
+}
+
+.profile-info-value-editable {
+    flex: 1;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.profile-username-input {
+    flex: 1;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: #fff;
+    font-size: 15px;
+    transition: all 0.3s ease;
+}
+
+.profile-username-input:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.08);
+    border-color: #667eea;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+}
+
+.edit-username-btn {
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.8);
+    transition: all 0.3s ease;
+}
+
+.edit-username-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #667eea;
+    transform: scale(1.05);
+}
+
+.change-password-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.change-password-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+}
+
+/* ========== СЕКЦИЯ ТУРОВ ========== */
+.tours-section {
+    margin-top: 32px;
+}
+
+.tours-title {
+    text-align: center;
+    font-size: 28px;
+    color: #fff;
+    margin-bottom: 32px;
+    font-weight: 700;
+}
+
+.carousel-container {
+    position: relative;
+    padding: 0 60px;
+}
+
+.carousel-wrapper {
+    overflow: hidden;
+    border-radius: 16px;
+}
+
+.carousel-track {
+    display: flex;
+    gap: 20px;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tour-card {
+    min-width: 400px;
+    max-width: 400px;
+    height: 300px;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.tour-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px rgba(102, 126, 234, 0.4);
+    border-color: rgba(102, 126, 234, 0.5);
+}
+
+.tour-card-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.tour-card-content {
+    padding: 18px;
+    background: rgba(10, 14, 39, 0.9);
+    backdrop-filter: blur(10px);
+}
+
+.tour-card-destination {
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+.tour-card-price {
+    font-size: 22px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(10, 14, 39, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+    z-index: 10;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.carousel-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-50%) scale(1.1);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.carousel-btn-left {
+    left: 10px;
+}
+
+.carousel-btn-right {
+    right: 10px;
+}
+
+/* ========== LOADING & ERROR ========== */
+.loading {
+    text-align: center;
+    padding: 40px;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 16px;
+}
+
+.error-message {
+    text-align: center;
+    padding: 40px;
+    color: #ff6b6b;
+    font-size: 16px;
+}
+
+/* ========== SCROLLBAR ========== */
+.profile-modal::-webkit-scrollbar {
+    width: 8px;
+}
+
+.profile-modal::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+}
+
+.profile-modal::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+}
+
+.profile-modal::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+
+
+/* ============ НОВЫЙ СТИЛЬ МОДАЛЬНОГО ОКНА СТРАНЫ ============ */
+.country-tours-modal {
+    position: fixed;
+    /* Более глубокий и "дорогой" фон */
+    background: rgba(12, 16, 48, 0.95);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    /* Тонкая градиентная обводка */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow:
+        0 40px 100px rgba(0, 0, 0, 0.8),
+        0 0 0 1px rgba(255, 255, 255, 0.05),
+        inset 0 0 20px rgba(100, 200, 255, 0.05);
+    border-radius: 24px;
+    padding: 0;
+    z-index: 2000;
+    width: 500px;
+    opacity: 0;
+    transform: scale(0.9) translateY(20px);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.country-tours-modal.show {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+}
+
+/* Шапка модального окна */
+.country-tours-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 28px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.country-tours-header h3 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    /* Новый градиент текста (голубой-фиолетовый) */
+    background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.close-country-modal {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    font-size: 20px;
+}
+
+.close-country-modal:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    transform: rotate(90deg);
+}
+
+/* Карусель */
+.country-tours-carousel {
+    position: relative;
+    padding: 10px 50px 30px 50px; /* Отступы для кнопок */
+}
+
+/* --- ИСПРАВЛЕНИЕ ОБРЕЗАНИЯ АНИМАЦИИ --- */
+.country-tours-carousel .carousel-wrapper {
+    overflow: hidden; /* Скрываем то, что совсем далеко */
+    border-radius: 0;
+    /* ВАЖНО: Добавляем внутренний отступ сверху/снизу, чтобы тень и transform влазили */
+    padding: 30px 10px;
+    margin: -20px -10px; /* Компенсируем отступ, чтобы визуально не сдвигалось */
+}
+
+.country-tours-carousel .carousel-track {
+    display: flex;
+    gap: 24px;
+    transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+    padding-left: 5px; /* Небольшой отступ слева */
+}
+
+/* Карточка тура */
+.country-tours-carousel .tour-card {
+    min-width: 340px;
+    max-width: 340px;
+    height: 300px;
+    border-radius: 20px;
+    overflow: visible; /* Разрешаем элементам выходить за пределы (для теней) */
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    position: relative;
+
+    /* Новый стиль карточки */
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+
+/* Ховер эффект карточки */
+.country-tours-carousel .tour-card:hover {
+    transform: translateY(-12px) scale(1.02); /* Более заметное всплытие */
+    border-color: rgba(100, 200, 255, 0.4);
+    box-shadow:
+        0 20px 40px rgba(0, 0, 0, 0.6),
+        0 0 30px rgba(100, 200, 255, 0.15); /* Голубое свечение */
+    z-index: 10;
+}
+
+/* Картинка в карточке */
+.country-tours-carousel .tour-card-image {
+    width: 100%;
+    height: 190px;
+    object-fit: cover;
+    border-radius: 20px 20px 0 0;
+    transition: all 0.5s ease;
+    filter: brightness(0.9);
+}
+
+.country-tours-carousel .tour-card:hover .tour-card-image {
+    filter: brightness(1.1);
+    height: 200px; /* Картинка чуть увеличивается */
+}
+
+.country-tours-carousel .tour-card-content {
+    padding: 18px 20px;
+    background: transparent;
+    position: relative;
+}
+
+.country-tours-carousel .tour-card-destination {
+    font-size: 17px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 8px;
+    line-height: 1.3;
+
+    /* Обрезаем длинный текст */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.country-tours-carousel .tour-card-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+}
+
+.country-tours-carousel .tour-card-duration {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.5);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.country-tours-carousel .tour-card-duration::before {
+    content: '';
+    display: block;
+    width: 6px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+}
+
+/* Цена */
+.country-tours-carousel .tour-card-price {
+    font-size: 18px;
+    font-weight: 700;
+    /* Голубой градиент цены */
+    background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Кнопки навигации (стрелки) */
+.country-tours-carousel .carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 20;
+}
+
+.country-tours-carousel .carousel-btn:hover:not(:disabled) {
+    background: #fff;
+    color: #000;
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+.country-tours-carousel .carousel-btn:disabled {
+    opacity: 0.2;
+    cursor: default;
+}
+
+.country-tours-carousel .carousel-btn-left {
+    left: 0px;
+}
+
+.country-tours-carousel .carousel-btn-right {
+    right: 0px;
+}
+
+/* Размытие фона карты */
+#mapContainer.blurred {
+    filter: blur(12px) brightness(0.6);
+    transform: scale(1.02);
+    pointer-events: none;
+    transition: all 0.5s ease;
+}
+
+
+/* Пульсация для значков - премиум эффект */
+@keyframes badgePulse {
+    0% {
+        r: 35;
+        opacity: 0.6;
+        stroke-width: 2;
+    }
+    50% {
+        r: 50;
+        opacity: 0;
+        stroke-width: 1;
+    }
+    100% {
+        r: 35;
+        opacity: 0.6;
+        stroke-width: 2;
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        r: 35;
+        opacity: 0.8;
+    }
+    50% {
+        r: 42;
+        opacity: 0.3;
+    }
+}
+
+
+/* ============ MODERN TOUR DETAIL MODAL (Bento Grid) ============ */
+.tour-detail-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 3000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    padding: 20px; /* Отступ от краев экрана */
+}
+
+.tour-detail-modal.show {
+    opacity: 1;
+}
+
+.tour-detail-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(5, 7, 20, 0.9); /* Очень темный фон */
+    backdrop-filter: blur(15px);
+}
+
+.tour-detail-content {
+    position: relative;
+    background: #0f132a; /* Глубокий темный цвет подложки */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 30px;
+    width: 100%;
+    max-width: 1100px; /* Широкое окно */
+    height: 90vh; /* Высота на 90% экрана */
+    overflow-y: auto; /* Скролл внутри */
+    box-shadow: 0 50px 100px rgba(0, 0, 0, 0.8);
+    transform: scale(0.95) translateY(20px);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    flex-direction: column;
+}
+
+.tour-detail-modal.show .tour-detail-content {
+    transform: scale(1) translateY(0);
+}
+
+/* Кнопка закрытия */
+.close-tour-detail {
+    position: absolute;
+    top: 25px;
+    right: 25px;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 100;
+}
+
+.close-tour-detail:hover {
+    background: #fff;
+    color: #000;
+    transform: rotate(90deg);
+}
+
+/* --- HERO SECTION (Обложка) --- */
+.tour-hero {
+    position: relative;
+    height: 400px;
+    flex-shrink: 0;
+}
+
+.tour-hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+}
+
+.tour-hero-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0 40px 40px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.tour-hero-title h2 {
+    font-size: 48px;
+    font-weight: 800;
+    line-height: 1.1;
+    margin: 0 0 16px 0;
+    text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    /* Градиент текста */
+    background: linear-gradient(135deg, #fff 30%, #a5b4fc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Теги (Бейджи) */
+.tour-tags {
+    display: flex;
+    gap: 12px;
+}
+
+.tag {
+    padding: 8px 16px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 600;
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.tag-blur {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.tag-difficulty {
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.difficulty-экстремальная { background: rgba(255, 59, 48, 0.2); border-color: rgba(255, 59, 48, 0.4); color: #ff5b55; }
+.difficulty-высокая { background: rgba(255, 149, 0, 0.2); border-color: rgba(255, 149, 0, 0.4); color: #ff9f0a; }
+.difficulty-средняя { background: rgba(255, 204, 0, 0.2); border-color: rgba(255, 204, 0, 0.4); color: #ffcc00; }
+
+/* Блок цены в хедере */
+.tour-hero-price {
+    text-align: right;
+}
+
+.price-label {
+    display: block;
+    font-size: 13px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 4px;
+    letter-spacing: 1px;
+}
+
+.price-value {
+    font-size: 36px;
+    font-weight: 800;
+    color: #fff;
+    text-shadow: 0 0 30px rgba(79, 172, 254, 0.6);
+}
+
+/* --- GRID LAYOUT (Сетка блоков) --- */
+.tour-grid-container {
+    padding: 20px 40px 40px 40px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 колонки */
+    gap: 20px;
+}
+
+/* Карточка информации (Блок) */
+.info-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 24px;
+    padding: 28px;
+    transition: all 0.3s ease;
+}
+
+.info-card:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+/* Заголовки блоков */
+.info-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.info-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(79, 172, 254, 0.2) 0%, rgba(0, 242, 254, 0.2) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #4facfe;
+}
+
+.info-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-text {
+    font-size: 15px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+/* Специфичные размеры блоков */
+.card-wide {
+    grid-column: span 2; /* Занимает 2 колонки */
+}
+
+.card-full {
+    grid-column: span 3; /* Занимает всю ширину */
+}
+
+/* Нижняя панель с кнопкой */
+.tour-detail-footer {
+    position: sticky;
+    bottom: 0;
+    padding: 20px 40px;
+    background: rgba(15, 19, 42, 0.95);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    justify-content: flex-end;
+    margin-top: auto; /* Прижимает к низу */
+}
+
+.book-btn {
+    padding: 16px 40px;
+    background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+    border: none;
+    border-radius: 16px;
+    color: #000;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 20px rgba(79, 172, 254, 0.4);
+}
+
+.book-btn:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 40px rgba(79, 172, 254, 0.6);
+}
+
+/* Адаптив для мобильных */
+@media (max-width: 900px) {
+    .tour-grid-container {
+        grid-template-columns: 1fr; /* В одну колонку */
+    }
+    .card-wide, .card-full {
+        grid-column: span 1;
+    }
+    .tour-hero-title h2 {
+        font-size: 32px;
+    }
+    .tour-hero-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ============ ИНТЕРАКТИВНАЯ КАРТА: МАРКЕРЫ И ПОДСВЕТКА ============ */
+
+/* 1. Стиль для самой страны, где есть туры */
+.country-path.has-tours {
+    fill: rgba(79, 172, 254, 0.15) !important; /* Легкая голубая заливка */
+    stroke: rgba(79, 172, 254, 0.4) !important; /* Голубая граница */
+    stroke-width: 0.5px;
+    filter: drop-shadow(0 0 8px rgba(79, 172, 254, 0.3)); /* Неоновое свечение */
+    transition: all 0.3s ease;
+}
+
+.country-path.has-tours:hover {
+    fill: rgba(79, 172, 254, 0.4) !important;
+    stroke: #fff !important;
+    filter: drop-shadow(0 0 15px rgba(79, 172, 254, 0.6));
+    cursor: pointer;
+}
+
+/* 2. Группа маркера (кружок + текст) */
+.tour-marker-group {
+    pointer-events: none; /* Чтобы клик проходил сквозь маркер в страну */
+    transition: opacity 0.3s ease;
+}
+
+/* 3. Пульсирующее кольцо (Радар) */
+.tour-marker-pulse {
+    fill: none;
+    stroke: #4facfe;
+    stroke-width: 1px;
+    opacity: 0;
+    transform-origin: center;
+    animation: radarPulse 2.5s infinite ease-out;
+}
+
+@keyframes radarPulse {
+    0% {
+        transform: scale(0.1);
+        opacity: 0.8;
+        stroke-width: 2px;
+    }
+    70% {
+        opacity: 0;
+    }
+    100% {
+        transform: scale(2.5);
+        opacity: 0;
+        stroke-width: 0px;
+    }
+}
+
+/* 4. Центральная точка с количеством туров */
+.tour-marker-circle {
+    fill: #0f132a;
+    stroke: #4facfe;
+    stroke-width: 1.5px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+    transition: all 0.3s ease;
+}
+
+/* Текст цифры внутри */
+.tour-marker-text {
+    fill: #fff;
+    font-size: 8px; /* D3 масштабирует SVG, поэтому размер маленький */
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    text-anchor: middle;
+    dominant-baseline: central;
+}
+
+/* Эффект при наведении на страну (увеличиваем маркер) */
+.country-path.has-tours:hover + .tour-marker-group .tour-marker-circle,
+.tour-marker-group.hovered .tour-marker-circle {
+    fill: #4facfe;
+    stroke: #fff;
+    transform: scale(1.2);
+}
+
+.country-path.has-tours:hover + .tour-marker-group .tour-marker-text,
+.tour-marker-group.hovered .tour-marker-text {
+    fill: #000;
+}
+
+/* ============ МИНИ ТУЛТИП (НОВЫЙ) ============ */
+.mini-tooltip {
+    background: rgba(15, 23, 42, 0.9);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 8px 12px;
+    border-radius: 8px;
+    pointer-events: none;
+    transform: translate(-50%, -100%); /* Центрируем над курсором */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    white-space: nowrap;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Если есть туры - делаем обводку голубой */
+.mini-tooltip.has-tours {
+    border-color: rgba(79, 172, 254, 0.4);
+    background: rgba(15, 23, 42, 0.95);
+    box-shadow: 0 0 15px rgba(79, 172, 254, 0.2);
+}
+
+/* Название страны */
+.tooltip-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: 0.3px;
+}
+
+/* Бейдж с количеством туров */
+.tooltip-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: #4facfe;
+    font-weight: 500;
+    background: rgba(79, 172, 254, 0.1);
+    padding: 2px 8px;
+    border-radius: 10px;
+}
+
+.tooltip-dot {
+    width: 6px;
+    height: 6px;
+    background: #4facfe;
+    border-radius: 50%;
+    box-shadow: 0 0 6px #4facfe;
+}
+
+/* Треугольничек снизу (стрелочка) */
+.mini-tooltip::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px 5px 0;
+    border-style: solid;
+    border-color: rgba(15, 23, 42, 0.9) transparent transparent transparent;
+}
