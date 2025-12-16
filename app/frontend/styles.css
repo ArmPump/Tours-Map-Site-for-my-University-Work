@@ -229,24 +229,24 @@ html, body {
     align-items: center;
 }
 
-.lang-toggle {
-    display: flex;
+.theme-toggle {
+    display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 10px 16px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    color: rgba(255, 255, 255, 0.9);
+    gap: 8px;
+    padding: 8px 14px;
+    background: rgba(15, 23, 42, 0.85);
+    border: 1px solid rgba(148, 163, 184, 0.5);
+    border-radius: 999px;
+    color: #e5e7eb;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 500;
     transition: all 0.3s ease;
 }
 
-.lang-toggle:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
+.theme-toggle:hover {
+    background: rgba(15, 23, 42, 1);
+    border-color: rgba(129, 140, 248, 0.9);
     transform: translateY(-2px);
 }
 
@@ -846,6 +846,25 @@ html, body {
 
 .carousel-btn-right {
     right: 10px;
+}
+
+/* Ползунок прогресса в карусели туров (профиль и модалка страны) */
+.carousel-progress {
+    position: relative;
+    margin: 16px auto 0;
+    width: 180px;
+    height: 3px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+    overflow: hidden;
+}
+
+.carousel-progress-bar {
+    height: 100%;
+    width: 0;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    transition: width 0.3s ease;
 }
 
 /* ========== LOADING & ERROR ========== */
@@ -1593,4 +1612,117 @@ html, body {
     border-width: 5px 5px 0;
     border-style: solid;
     border-color: rgba(15, 23, 42, 0.9) transparent transparent transparent;
+}
+
+
+/* ========== СВЕТЛАЯ ТЕМА (ГЛОБАЛЬНЫЕ ПЕРЕОПРЕДЕЛЕНИЯ) ========== */
+body.light-theme {
+    background: #f5f5f7;
+    color: #111827;
+}
+
+body.light-theme .modern-header {
+    background: rgba(255, 255, 255, 0.98);
+    border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
+}
+
+body.light-theme .logo-text {
+    text-shadow: none;
+}
+
+body.light-theme .nav-link {
+    color: rgba(15, 23, 42, 0.7);
+}
+
+body.light-theme .nav-link:hover,
+body.light-theme .nav-link.active {
+    color: #111827;
+    background: rgba(15, 23, 42, 0.06);
+}
+
+body.light-theme .theme-toggle {
+    background: #e5e7eb;
+    border-color: #cbd5e1;
+    color: #111827;
+}
+
+body.light-theme .theme-toggle:hover {
+    background: #d1d5db;
+    border-color: #9ca3af;
+}
+
+body.light-theme .profile-btn {
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35);
+}
+
+body.light-theme #mapContainer {
+    background: #e5edf7;
+}
+
+body.light-theme .country-path {
+    fill: #dde5f3;
+    stroke: #c2d0e4;
+}
+
+body.light-theme .country-path:hover {
+    filter: none;
+    stroke: #9fb3d9;
+}
+
+body.light-theme .country-path.has-tours {
+    fill: rgba(79, 172, 254, 0.18) !important;
+    stroke: rgba(79, 172, 254, 0.6) !important;
+}
+
+body.light-theme .country-label {
+    fill: rgba(15, 23, 42, 0.9);
+    text-shadow: none;
+}
+
+body.light-theme .country-info-panel {
+    background: rgba(255, 255, 255, 0.96);
+    border-color: rgba(15, 23, 42, 0.08);
+    box-shadow: 0 20px 50px rgba(15, 23, 42, 0.1);
+}
+
+body.light-theme .zoom-btn {
+    background: rgba(255, 255, 255, 0.96);
+    border-color: rgba(15, 23, 42, 0.08);
+    color: #111827;
+}
+
+body.light-theme .modal,
+body.light-theme .profile-modal,
+body.light-theme .country-tours-modal,
+body.light-theme .tour-detail-content {
+    background: #ffffff;
+    border-color: rgba(15, 23, 42, 0.08);
+    color: #111827;
+}
+
+body.light-theme .profile-info-value,
+body.light-theme .profile-username-input {
+    background: rgba(15, 23, 42, 0.03);
+    border-color: rgba(15, 23, 42, 0.08);
+    color: #111827;
+}
+
+body.light-theme .tour-detail-overlay {
+    background: rgba(15, 23, 42, 0.45);
+}
+
+body.light-theme .tour-grid-container .info-card {
+    background: #f9fafb;
+    border-color: rgba(15, 23, 42, 0.06);
+}
+
+body.light-theme .mini-tooltip {
+    background: #ffffff;
+    border-color: rgba(15, 23, 42, 0.08);
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
+}
+
+body.light-theme .mini-tooltip::after {
+    border-color: #ffffff transparent transparent transparent;
 }

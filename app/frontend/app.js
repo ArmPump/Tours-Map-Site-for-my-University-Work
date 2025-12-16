@@ -484,20 +484,10 @@ function getTourWordForm(count, lang) {
 }
 
 // ============ ФУНКЦИИ ЯЗЫКА ============
-function toggleLanguage() {
-    currentLang = currentLang === 'ru' ? 'en' : 'ru';
-    updateAllTranslations();
-
-    if (worldData) {
-        updateCountryLabels();
-    }
-}
-
 function updateAllTranslations() {
     const t = translations[currentLang];
 
-    // Header
-    document.getElementById('langText').textContent = currentLang === 'ru' ? 'EN' : 'RU';
+    // Header (защищаемся, если каких‑то элементов нет на странице)
     document.getElementById('navHome').textContent = t.navHome;
     document.getElementById('navTours').textContent = t.navTours;
     document.getElementById('navDestinations').textContent = t.navDestinations;
@@ -812,6 +802,8 @@ async function loadTours() {
 
         if (tours && tours.length > 0) {
             renderTourCards();
+            // Инициализируем ползунок карусели профиля при первой загрузке туров
+            updateCarouselProgress('profileCarouselProgress', 0, tours.length);
         } else {
             carouselTrack.innerHTML = '<div class="loading">Туры не найдены</div>';
         }
@@ -983,17 +975,29 @@ function closeTourDetailModal() {
     }
 }
 
+function updateCarouselProgress(progressElementId, currentIndex, total) {
+    const el = document.getElementById(progressElementId);
+    if (!el || total <= 0) return;
+    const clampedIndex = Math.min(Math.max(currentIndex, 0), total - 1);
+    const widthPercent = ((clampedIndex + 1) / total) * 100;
+    el.style.width = `${widthPercent}%`;
+}
+
 function scrollCarousel(direction) {
     const track = document.getElementById('carouselTrack');
+    const cards = track ? track.querySelectorAll('.tour-card') : [];
     const cardWidth = 420;
+
+    if (!track || cards.length === 0) return;
 
     if (direction === 'left') {
         currentCarouselIndex = Math.max(0, currentCarouselIndex - 1);
     } else {
-        currentCarouselIndex = Math.min(tours.length - 2, currentCarouselIndex + 1);
+        currentCarouselIndex = Math.min(cards.length - 1, currentCarouselIndex + 1);
     }
 
     track.style.transform = `translateX(-${currentCarouselIndex * cardWidth}px)`;
+    updateCarouselProgress('profileCarouselProgress', currentCarouselIndex, cards.length);
 }
 
 // ============ КАРТА МИРА ============
@@ -1355,6 +1359,9 @@ async function openCountryToursModal(countryCode, x, y) {
                     <path d="M9 18l6-6-6-6"/>
                 </svg>
             </button>
+            <div class="carousel-progress">
+                <div class="carousel-progress-bar" id="countryCarouselProgress"></div>
+            </div>
         </div>
     `;
 
@@ -1362,6 +1369,8 @@ async function openCountryToursModal(countryCode, x, y) {
 
     setTimeout(() => {
         modal.classList.add('show');
+        // Инициализируем ползунок карусели стран
+        updateCarouselProgress('countryCarouselProgress', 0, countryTours.length);
     }, 10);
 }
 
@@ -1390,6 +1399,7 @@ function scrollCountryCarousel(direction) {
     }
 
     track.style.transform = `translateX(-${currentCountryCarouselIndex * (cardWidth + 20)}px)`;
+    updateCarouselProgress('countryCarouselProgress', currentCountryCarouselIndex, cards.length);
 }
 
 

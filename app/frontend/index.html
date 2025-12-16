@@ -42,12 +42,12 @@
 
 
             <div class="header-actions">
-                <button class="lang-toggle" onclick="toggleLanguage()" title="Change language">
+                <!-- Переключатель темы (светлая/тёмная) вместо языка -->
+                <button class="theme-toggle" onclick="toggleTheme()" title="Переключить тему">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
                     </svg>
-                    <span id="langText">EN</span>
+                    <span id="themeToggleText">Тёмная тема</span>
                 </button>
                 <button class="profile-btn" onclick="handleProfileClick()">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -198,6 +198,11 @@
                         <path d="M9 18l6-6-6-6"/>
                     </svg>
                 </button>
+
+                <!-- Ползунок прогресса по турам в профиле -->
+                <div class="carousel-progress">
+                    <div class="carousel-progress-bar" id="profileCarouselProgress"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -205,6 +210,7 @@
     <!-- Подключаем библиотеки -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+    <script src="theme.js"></script>
     <script src="app.js"></script>
     <script>
     // Проверка доступности API при загрузке
