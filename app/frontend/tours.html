@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Экстремальные туры - Zhukovsky Adventures</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
+            min-height: 100vh;
+        }
+
+        /* ============ HEADER (ATTENTION - AIDA) ============ */
+        .main-header {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: white;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            letter-spacing: 1px;
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 8px;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .profile-btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
+        }
+
+        .profile-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(245, 87, 108, 0.6);
+        }
+
+        /* ============ HERO SECTION (ATTENTION + INTEREST - AIDA) ============ */
+        .hero-section {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 60px 20px 40px;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 10px 20px;
+            border-radius: 30px;
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            color: white;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            line-height: 1.2;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .hero-subtitle {
+            font-size: 1.4rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 30px;
+            animation: fadeInUp 0.8s ease 0.2s backwards;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin-top: 40px;
+            animation: fadeInUp 0.8s ease 0.4s backwards;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #f093fb;
+            text-shadow: 0 0 20px rgba(240, 147, 251, 0.5);
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1rem;
+            margin-top: 5px;
+        }
+
+        /* ============ FILTERS (SMART - Specific) ============ */
+        .filters-container {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .filters-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideInUp 0.6s ease;
+        }
+
+        .filters-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .filters-title {
+            font-size: 1.8rem;
+            color: #1e3c72;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .active-filters-count {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .filter-item {
+            position: relative;
+        }
+
+        .filter-label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .filter-label::after {
+            content: '';
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background: #667eea;
+            border-radius: 50%;
+            margin-left: 6px;
+        }
+
+        .filter-select {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            font-size: 1rem;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%23667eea' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            padding-right: 45px;
+        }
+
+        .filter-select:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 15px 35px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+            transform: translateY(-2px);
+        }
+
+        /* ============ RESULTS (DESIRE - AIDA) ============ */
+        .results-section {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px 30px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .results-count {
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .results-count span {
+            color: #f093fb;
+            font-size: 1.5rem;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px;
+            border-radius: 10px;
+        }
+
+        .view-btn {
+            padding: 8px 16px;
+            background: transparent;
+            border: none;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .view-btn.active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* ============ TOURS GRID (DESIRE + ACTION - AIDA) ============ */
+        .tours-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 35px;
+            animation: fadeIn 0.6s ease;
+        }
+
+        .tour-card {
+            background: white;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .tour-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .tour-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);
+        }
+
+        .tour-card:hover::before {
+            opacity: 1;
+        }
+
+        .tour-image-wrapper {
+            position: relative;
+            height: 280px;
+            overflow: hidden;
+        }
+
+        .tour-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .tour-card:hover .tour-image {
+            transform: scale(1.1);
+        }
+
+        .tour-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.7) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 25px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .tour-card:hover .tour-overlay {
+            opacity: 1;
+        }
+
+        .quick-info {
+            color: white;
+            font-size: 0.9rem;
+            display: flex;
+            gap: 15px;
+        }
+
+        .tour-badge-top {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            z-index: 2;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .badge-extreme {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .badge-high {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            color: #d63031;
+        }
+
+        .badge-medium {
+            background: linear-gradient(135deg, #a8e6cf 0%, #56ab2f 100%);
+            color: white;
+        }
+
+        .tour-content {
+            padding: 30px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .tour-destination {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e3c72;
+            margin-bottom: 12px;
+            line-height: 1.3;
+        }
+
+        .tour-description {
+            color: #666;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .tour-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .feature-badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .badge-duration {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .badge-country {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .tour-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 20px;
+            border-top: 2px solid #f5f5f5;
+        }
+
+        .tour-price {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .price-label {
+            font-size: 0.85rem;
+            color: #999;
+            margin-bottom: 4px;
+        }
+
+        .price-value {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tour-cta {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .tour-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        /* ============ LOADING & EMPTY STATES ============ */
+        .loading {
+            text-align: center;
+            padding: 80px 20px;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .loading::after {
+            content: '...';
+            animation: dots 1.5s infinite;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 80px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+        }
+
+        .no-results-icon {
+            font-size: 5rem;
+            margin-bottom: 20px;
+        }
+
+        .no-results-title {
+            font-size: 2rem;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .no-results-text {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+        }
+
+        /* ============ ANIMATIONS ============ */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-stats {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tours-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .header-nav {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header class="main-header">
+        <div class="header-container">
+            <div class="logo">⚡ Zhukovsky</div>
+            <nav class="header-nav">
+                <a href="index.html" class="nav-link">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    </svg>
+                    <span>Главная</span>
+                </a>
+                <a href="tours.html" class="nav-link">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                    </svg>
+                    <span>Туры</span>
+                </a>
+                <a href="index.html#mapContainer" class="nav-link">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    <span>Направления</span>
+                </a>
+            </nav>
+            <button class="profile-btn" onclick="window.location.href='index.html'">
+                👤 Профиль
+            </button>
+        </div>
+    </header>
+
+    <!-- HERO SECTION (ATTENTION + INTEREST) -->
+    <section class="hero-section">
+        <div class="hero-badge">🔥 Более 100+ экстремальных приключений по всему миру</div>
+        <h1 class="hero-title">Найди своё идеальное<br>приключение</h1>
+        <p class="hero-subtitle">Адреналин, вызов себе и незабываемые впечатления ждут тебя</p>
+
+        <div class="hero-stats">
+            <div class="stat-item">
+                <div class="stat-number" id="totalTours">12</div>
+                <div class="stat-label">Активных туров</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">45+</div>
+                <div class="stat-label">Стран</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">98%</div>
+                <div class="stat-label">Довольных клиентов</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FILTERS (SMART - Specific, Measurable) -->
+    <section class="filters-container">
+        <div class="filters-card">
+            <div class="filters-header">
+                <h2 class="filters-title">
+                    🎯 Найди свой тур
+                </h2>
+                <div class="active-filters-count" id="activeFiltersCount" style="display: none;">
+                    Активных фильтров: <span id="filterCount">0</span>
+                </div>
+            </div>
+
+            <div class="filters-grid">
+                <div class="filter-item">
+                    <label class="filter-label">Уровень сложности</label>
+                    <select id="difficultyFilter" class="filter-select">
+                        <option value="">🎯 Все уровни</option>
+                        <option value="Средняя">🟢 Средняя</option>
+                        <option value="Высокая">🟡 Высокая</option>
+                        <option value="Экстремальная">🔴 Экстремальная</option>
+                    </select>
+                </div>
+
+                <div class="filter-item">
+                    <label class="filter-label">Длительность тура</label>
+                    <select id="durationFilter" class="filter-select">
+                        <option value="">⏱️ Любая длительность</option>
+                        <option value="3">⚡ Короткие (до 3 дней)</option>
+                        <option value="7">📅 Недельные (до 7 дней)</option>
+                        <option value="10">🗓️ Средние (до 10 дней)</option>
+                        <option value="30">📆 Длительные (до 30 дней)</option>
+                        <option value="999">🏔️ Экспедиции (30+ дней)</option>
+                    </select>
+                </div>
+
+                <div class="filter-item">
+                    <label class="filter-label">Сортировка</label>
+                    <select id="sortFilter" class="filter-select">
+                        <option value="default">⭐ Рекомендуемые</option>
+                        <option value="price-asc">💰 Сначала дешевые</option>
+                        <option value="price-desc">💎 Сначала дорогие</option>
+                        <option value="duration-asc">⚡ Сначала короткие</option>
+                        <option value="duration-desc">🏔️ Сначала длинные</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="filter-actions">
+                <button class="btn btn-secondary" onclick="resetFilters()">
+                    🔄 Сбросить
+                </button>
+                <button class="btn btn-primary" onclick="applyFilters()">
+                    ✨ Применить фильтры
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- RESULTS (DESIRE) -->
+    <section class="results-section">
+        <div class="results-header">
+            <div class="results-count">
+                Найдено туров: <span id="resultsCount">0</span>
+            </div>
+            <div class="view-toggle">
+                <button class="view-btn active">🎴 Сетка</button>
+                <button class="view-btn">📋 Список</button>
+            </div>
+        </div>
+
+        <!-- TOURS GRID (ACTION) -->
+        <div class="tours-grid" id="toursGrid">
+            <div class="loading">Загружаем приключения</div>
+        </div>
+    </section>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8000';
+        let allTours = [];
+        let filteredTours = [];
+
+        // Загрузка туров
+        async function loadAllTours() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/tours`);
+                const data = await response.json();
+                allTours = data.tours || [];
+                filteredTours = [...allTours];
+
+                // Обновляем счетчик
+                document.getElementById('totalTours').textContent = allTours.length;
+
+                renderTours(filteredTours);
+                updateResultsInfo();
+            } catch (error) {
+                console.error('Error loading tours:', error);
+                document.getElementById('toursGrid').innerHTML = `
+                    <div class="no-results">
+                        <div class="no-results-icon">😔</div>
+                        <div class="no-results-title">Упс! Что-то пошло не так</div>
+                        <div class="no-results-text">Проверьте подключение к серверу и обновите страницу</div>
+                    </div>
+                `;
+            }
+        }
+
+        // Отрисовка туров
+        function renderTours(tours) {
+            const grid = document.getElementById('toursGrid');
+
+            if (!tours || tours.length === 0) {
+                grid.innerHTML = `
+                    <div class="no-results">
+                        <div class="no-results-icon">🔍</div>
+                        <div class="no-results-title">Туры не найдены</div>
+                        <div class="no-results-text">Попробуйте изменить критерии поиска</div>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = tours.map(tour => `
+                <div class="tour-card" onclick="openTourDetails(${tour.id})">
+                    <div class="tour-image-wrapper">
+                        <img src="${tour.image_url}" alt="${tour.destination}" class="tour-image"
+                             onerror="this.src='https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=400&fit=crop'">
+
+                        <div class="tour-badge-top ${getDifficultyClass(tour.difficulty)}">
+                            ${getDifficultyIcon(tour.difficulty)} ${tour.difficulty}
+                        </div>
+
+                        <div class="tour-overlay">
+                            <div class="quick-info">
+                                <span>📍 ${tour.country_code}</span>
+                                <span>⏱️ ${tour.duration_days} дней</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tour-content">
+                        <h3 class="tour-destination">${tour.destination}</h3>
+                        <p class="tour-description">${tour.description}</p>
+
+                        <div class="tour-features">
+                            <span class="feature-badge badge-duration">
+                                ⏱️ ${tour.duration_days} ${getDaysWord(tour.duration_days)}
+                            </span>
+                            <span class="feature-badge badge-country">
+                                📍 ${tour.country_code}
+                            </span>
+                        </div>
+
+                        <div class="tour-footer">
+                            <div class="tour-price">
+                                <span class="price-label">от</span>
+                                <span class="price-value">${formatPrice(tour.price)} ₽</span>
+                            </div>
+                            <button class="tour-cta">
+                                Подробнее →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Применение фильтров
+        function applyFilters() {
+            const difficulty = document.getElementById('difficultyFilter').value;
+            const duration = document.getElementById('durationFilter').value;
+            const sort = document.getElementById('sortFilter').value;
+
+            let filtered = [...allTours];
+
+            // Фильтр по сложности
+            if (difficulty) {
+                filtered = filtered.filter(tour => tour.difficulty === difficulty);
+            }
+
+            // Фильтр по длительности
+            if (duration) {
+                filtered = filtered.filter(tour => tour.duration_days <= parseInt(duration));
+            }
+
+            // Сортировка
+            switch(sort) {
+                case 'price-asc':
+                    filtered.sort((a, b) => a.price - b.price);
+                    break;
+                case 'price-desc':
+                    filtered.sort((a, b) => b.price - a.price);
+                    break;
+                case 'duration-asc':
+                    filtered.sort((a, b) => a.duration_days - b.duration_days);
+                    break;
+                case 'duration-desc':
+                    filtered.sort((a, b) => b.duration_days - a.duration_days);
+                    break;
+            }
+
+            filteredTours = filtered;
+            renderTours(filteredTours);
+            updateResultsInfo();
+            updateActiveFilters();
+        }
+
+        // Сброс фильтров
+        function resetFilters() {
+            document.getElementById('difficultyFilter').value = '';
+            document.getElementById('durationFilter').value = '';
+            document.getElementById('sortFilter').value = 'default';
+
+            filteredTours = [...allTours];
+            renderTours(filteredTours);
+            updateResultsInfo();
+            updateActiveFilters();
+        }
+
+        // Обновление счетчика фильтров
+        function updateActiveFilters() {
+            const difficulty = document.getElementById('difficultyFilter').value;
+            const duration = document.getElementById('durationFilter').value;
+            const sort = document.getElementById('sortFilter').value;
+
+            let count = 0;
+            if (difficulty) count++;
+            if (duration) count++;
+            if (sort !== 'default') count++;
+
+            const badge = document.getElementById('activeFiltersCount');
+            const countSpan = document.getElementById('filterCount');
+
+            if (count > 0) {
+                badge.style.display = 'block';
+                countSpan.textContent = count;
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        // Обновление инфо о результатах
+        function updateResultsInfo() {
+            document.getElementById('resultsCount').textContent = filteredTours.length;
+        }
+
+        // Открытие деталей тура
+        function openTourDetails(tourId) {
+            localStorage.setItem('selectedTourId', tourId);
+            window.location.href = 'index.html';
+        }
+
+        // Вспомогательные функции
+        function formatPrice(price) {
+            return new Intl.NumberFormat('ru-RU').format(price);
+        }
+
+        function getDaysWord(days) {
+            if (days % 10 === 1 && days % 100 !== 11) return 'день';
+            if ([2, 3, 4].includes(days % 10) && ![12, 13, 14].includes(days % 100)) return 'дня';
+            return 'дней';
+        }
+
+        function getDifficultyClass(difficulty) {
+            if (difficulty === 'Экстремальная') return 'badge-extreme';
+            if (difficulty === 'Высокая') return 'badge-high';
+            return 'badge-medium';
+        }
+
+        function getDifficultyIcon(difficulty) {
+            if (difficulty === 'Экстремальная') return '🔴';
+            if (difficulty === 'Высокая') return '🟡';
+            return '🟢';
+        }
+
+        // Загрузка при открытии
+        window.addEventListener('DOMContentLoaded', loadAllTours);
+
+        // Применение фильтров при изменении
+        document.querySelectorAll('.filter-select').forEach(select => {
+            select.addEventListener('change', applyFilters);
+        });
+    </script>
+</body>
+</html>

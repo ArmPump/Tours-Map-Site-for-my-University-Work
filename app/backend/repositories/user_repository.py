@@ -8,13 +8,13 @@ class UserRepository:
         self.db = db
 
     def get_by_id(self, id: int) -> Optional[User]:
-        return self.db.query().filter(User.id == id).first()
+        return self.db.query(User).filter(User.id == id).first()
 
     def get_by_username(self, username: str) -> Optional[User]:
-        return self.db.query().filter(User.username == username).first()
+        return self.db.query(User).filter(User.username == username).first()
 
     def get_by_email(self, email: str) -> Optional[User]:
-        return self.db.query().filter(User.email == email).first()
+        return self.db.query(User).filter(User.email == email).first()
 
     def create_user(self, user_data: UserCreate) -> User:
         db_user = User(**user_data.model_dump())

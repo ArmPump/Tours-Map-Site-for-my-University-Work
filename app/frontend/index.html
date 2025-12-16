@@ -18,27 +18,28 @@
             </div>
 
             <nav class="header-nav">
-                <a href="#" class="nav-link">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                    </svg>
-                    <span id="navHome">Главная</span>
-                </a>
-                <a href="#" class="nav-link">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-                    </svg>
-                    <span id="navTours">Туры</span>
-                </a>
-                <a href="#" class="nav-link">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                        <circle cx="12" cy="10" r="3"></circle>
-                    </svg>
-                    <span id="navDestinations">Направления</span>
-                </a>
-            </nav>
+    <a href="index.html" class="nav-link">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+        </svg>
+        <span id="navHome">Главная</span>
+    </a>
+    <a href="tours.html" class="nav-link">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+        </svg>
+        <span id="navTours">Туры</span>
+    </a>
+    <a href="index.html#mapContainer" class="nav-link">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+        </svg>
+        <span id="navDestinations">Направления</span>
+    </a>
+</nav>
+
 
             <div class="header-actions">
                 <button class="lang-toggle" onclick="toggleLanguage()" title="Change language">
@@ -205,5 +206,22 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
     <script src="app.js"></script>
+    <script>
+    // Проверка доступности API при загрузке
+    window.addEventListener('DOMContentLoaded', async () => {
+        try {
+            const response = await fetch('http://localhost:8000/health');
+            if (response.ok) {
+                console.log('✅ Backend connected successfully');
+            }
+        } catch (error) {
+            console.warn('⚠️ Backend not available, using mock data', error);
+        }
+
+        checkAuth();
+        loadMap();
+        updateAllTranslations();
+    });
+</script>
 </body>
 </html>

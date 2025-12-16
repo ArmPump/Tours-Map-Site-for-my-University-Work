@@ -451,7 +451,11 @@ const colorScale = d3.scaleOrdinal().range(vibrantMapColors);
 
 // ============ ФУНКЦИЯ ПОДСЧЕТА ТУРОВ ПО СТРАНЕ ============
 function getToursCountByCountry(countryCode) {
-    return mockTours.filter(tour => tour.country_code === countryCode).length;
+    if (!tours || tours.length === 0) {
+        // Если туры еще не загружены, используем mock данные
+        return mockTours.filter(tour => tour.country_code === countryCode).length;
+    }
+    return tours.filter(tour => tour.country_code === countryCode).length;
 }
 
 // ============ ФУНКЦИЯ СКЛОНЕНИЯ СЛОВА "ТУР" ============
@@ -605,7 +609,7 @@ function toggleAuthMode() {
     document.getElementById('authForm').reset();
 }
 
-function handleAuthSubmit(event) {
+async function handleAuthSubmit(event) {
     event.preventDefault();
 
     const email = document.getElementById('email').value;
@@ -621,25 +625,46 @@ function handleAuthSubmit(event) {
     submitBtn.disabled = true;
     submitBtn.textContent = t.loading;
 
-    setTimeout(() => {
+    try {
         if (isLoginMode) {
-            const username = email.includes('@') ? email.split('@')[0] : email;
+            // ВХОД - пока упрощенно (без JWT)
+            const user = await UserAPI.getUserByEmail(email);
 
-            localStorage.setItem('username', username);
-            localStorage.setItem('email', email);
+            if (user) {
+                localStorage.setItem('username', user.username);
+                localStorage.setItem('email', user.email);
+                localStorage.setItem('userId', user.id);
 
-            alert(t.loginSuccess);
-            closeAuthModal();
-            checkAuth();
+                alert(t.loginSuccess);
+                closeAuthModal();
+                checkAuth();
+            } else {
+                alert('Пользователь не найден');
+            }
 
         } else {
+            // РЕГИСТРАЦИЯ
+            const username = email.split('@')[0]; // Генерируем username из email
+
+            const userData = {
+                username: username,
+                email: email,
+                password: password,
+                avatar: null
+            };
+
+            const newUser = await UserAPI.register(userData);
+
             alert(t.signupSuccess);
-            toggleAuthMode();
+            toggleAuthMode(); // Переключаем на вход
         }
 
+    } catch (error) {
+        alert(error.message || 'Ошибка авторизации');
+    } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = isLoginMode ? t.login : t.signup;
-    }, 500);
+    }
 }
 
 // ============ МОДАЛЬНОЕ ОКНО ПРОФИЛЯ ============
@@ -777,14 +802,23 @@ function changePassword() {
 }
 
 // ============ ТУРЫ ============
-function loadTours() {
+async function loadTours() {
     const carouselTrack = document.getElementById('carouselTrack');
     carouselTrack.innerHTML = '<div class="loading">Загрузка туров...</div>';
 
-    setTimeout(() => {
-        tours = mockTours;
-        renderTourCards();
-    }, 300);
+    try {
+        // Получаем туры с backend
+        tours = await TourAPI.getAllTours();
+
+        if (tours && tours.length > 0) {
+            renderTourCards();
+        } else {
+            carouselTrack.innerHTML = '<div class="loading">Туры не найдены</div>';
+        }
+    } catch (error) {
+        console.error('Error loading tours:', error);
+        carouselTrack.innerHTML = '<div class="loading">Ошибка загрузки туров</div>';
+    }
 }
 
 function renderTourCards() {
@@ -1233,11 +1267,15 @@ document.head.appendChild(style);
 // ============ МОДАЛЬНОЕ ОКНО С ТУРАМИ СТРАНЫ ============
 let currentCountryCarouselIndex = 0;
 
-function openCountryToursModal(countryCode, x, y) {
-    const countryTours = mockTours.filter(tour => tour.country_code === countryCode);
+async function openCountryToursModal(countryCode, x, y) {
+    let countryTours = tours.filter(tour => tour.country_code === countryCode);
+
+    // Если туры еще не загружены, используем mock
+    if (!tours || tours.length === 0) {
+        countryTours = mockTours.filter(tour => tour.country_code === countryCode);
+    }
 
     if (countryTours.length === 0) return;
-
     const countryName = countryNames[currentLang][countryCode] || countryCode;
 
     // Эффект размытия карты
@@ -1427,6 +1465,127 @@ function hideCountryTooltip(event, d) {
 
 
 
+// ============ API КОНФИГУРАЦИЯ ============
+const API_BASE_URL = 'http://localhost:8000'; // Ваш FastAPI backend
+
+// ============ API ФУНКЦИИ ============
+class TourAPI {
+    static async getAllTours() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/tours`);
+            if (!response.ok) throw new Error('Failed to fetch tours');
+            const data = await response.json();
+            return data.tours; // Вернет массив туров из TourListResponse
+        } catch (error) {
+            console.error('Error fetching tours:', error);
+            return mockTours; // Fallback на mock данные
+        }
+    }
+
+    static async getTourById(tourId) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/tours/${tourId}`);
+            if (!response.ok) throw new Error('Tour not found');
+            return await response.json();
+        } catch (error) {
+            console.error('Error fetching tour:', error);
+            return mockTours.find(t => t.id === tourId);
+        }
+    }
+
+    static async getToursByCategory(categoryName) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/tours/category_name/${categoryName}`);
+            if (!response.ok) throw new Error('Failed to fetch tours');
+            const data = await response.json();
+            return data.tours;
+        } catch (error) {
+            console.error('Error fetching tours by category:', error);
+            return [];
+        }
+    }
+
+    static async getToursByDifficulty(difficulty) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/tours/category_difficulty/${difficulty}`);
+            if (!response.ok) throw new Error('Failed to fetch tours');
+            const data = await response.json();
+            return data.tours;
+        } catch (error) {
+            console.error('Error fetching tours by difficulty:', error);
+            return [];
+        }
+    }
+
+    static async getToursByDuration(days) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/tours/category_durations/${days}`);
+            if (!response.ok) throw new Error('Failed to fetch tours');
+            const data = await response.json();
+            return data.tours;
+        } catch (error) {
+            console.error('Error fetching tours by duration:', error);
+            return [];
+        }
+    }
+
+    static async getAllCategories() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/categories`);
+            if (!response.ok) throw new Error('Failed to fetch categories');
+            return await response.json();
+        } catch (error) {
+            console.error('Error fetching categories:', error);
+            return [];
+        }
+    }
+}
+
+class UserAPI {
+    static async register(userData) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/users/register`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userData)
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.detail || 'Registration failed');
+            }
+
+            return await response.json();
+        } catch (error) {
+            console.error('Registration error:', error);
+            throw error;
+        }
+    }
+
+    static async getUserByEmail(email) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/users/email/${email}`);
+            if (!response.ok) throw new Error('User not found');
+            return await response.json();
+        } catch (error) {
+            console.error('Error fetching user:', error);
+            return null;
+        }
+    }
+
+    static async getUserById(userId) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/users/${userId}`);
+            if (!response.ok) throw new Error('User not found');
+            return await response.json();
+        } catch (error) {
+            console.error('Error fetching user:', error);
+            return null;
+        }
+    }
+}
 
 
 
