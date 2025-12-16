@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session, joinedload
 from typing import List, Optional
 from ..models.tours import Tour
+from ..models.categories import Category
 from ..schemas.tours import TourCreate
 
 class TourRepository:
@@ -14,7 +15,7 @@ class TourRepository:
         return self.db.query(Tour).options(joinedload(Tour.categories)).filter(Tour.id == tour_id).first()
 
     def get_by_category_name(self, category_name: str) -> List[Tour]:
-        return self.db.query(Tour).options(joinedload(Tour.categories)).filter(Tour.category_name == category_name).all()
+        return self.db.query(Tour).join(Category).filter(Category.name == category_name).all()
 
     def get_by_difficulty(self, difficulty_name: str) -> List[Tour]:
         return self.db.query(Tour).options(joinedload(Tour.categories)).filter(Tour.difficulty == difficulty_name).all()
