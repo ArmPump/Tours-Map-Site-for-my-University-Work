@@ -20,7 +20,7 @@ class CategoryRepository:
         return self.db.query(Category).filter(Category.duration_days == category_duration).first()
 
     def create(self, category_data: CategoryCreate) -> Category:
-        db_category = Category(**category_data.model_dumb())
+        db_category = Category(**category_data.model_dump())
         self.db.add(db_category)
         self.db.commit()
         self.db.refresh(db_category)
