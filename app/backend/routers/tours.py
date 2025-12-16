@@ -21,18 +21,17 @@ def get_tour_by_id(tour_id: int, db: Session = Depends(get_db)):
     tour = TourService(db)
     return tour.get_tour_by_id(tour_id)
 
-@router.get("/category/{category_name}", response_model=TourListResponse, status_code=status.HTTP_200_OK)
+@router.get("/category_name/{category_name}", response_model=TourListResponse, status_code=status.HTTP_200_OK)
 def get_tours_by_category_name(category_name: str, db: Session = Depends(get_db)):
     tour = TourService(db)
     return tour.get_tour_by_category_name(category_name)
 
-@router.get("/category/{category_durations}", response_model=TourListResponse, status_code=status.HTTP_200_OK)
+@router.get("/category_durations/{category_durations}", response_model=TourListResponse, status_code=status.HTTP_200_OK)
 def get_tours_by_category_durations(category_durations: int, db: Session = Depends(get_db)):
     tour = TourService(db)
     return tour.get_tour_by_category_durations(category_durations)
 
-@router.get("/category/{category_difficulty}", response_model=TourListResponse, status_code=status.HTTP_200_OK)
+@router.get("/category_difficulty/{category_difficulty}", response_model=TourListResponse, status_code=status.HTTP_200_OK)
 def get_tours_by_category_difficulty(category_difficulty: str, db: Session = Depends(get_db)):
     tour = TourService(db)
     return tour.get_tour_by_category_difficulty(category_difficulty)
-
