@@ -16,11 +16,6 @@ def get_tours(db: Session = Depends(get_db)):
     tour = TourService(db)
     return tour.get_all_tours()
 
-@router.get("/{tour_id}", response_model=TourResponse, status_code=status.HTTP_200_OK)
-def get_tour_by_id(tour_id: int, db: Session = Depends(get_db)):
-    tour = TourService(db)
-    return tour.get_tour_by_id(tour_id)
-
 @router.get("/category_name/{category_name}", response_model=TourListResponse, status_code=status.HTTP_200_OK)
 def get_tours_by_category_name(category_name: str, db: Session = Depends(get_db)):
     tour = TourService(db)
@@ -35,3 +30,8 @@ def get_tours_by_category_durations(category_durations: int, db: Session = Depen
 def get_tours_by_category_difficulty(category_difficulty: str, db: Session = Depends(get_db)):
     tour = TourService(db)
     return tour.get_tour_by_category_difficulty(category_difficulty)
+
+@router.get("/{tour_id}", response_model=TourResponse, status_code=status.HTTP_200_OK)
+def get_tour_by_id(tour_id: int, db: Session = Depends(get_db)):
+    tour = TourService(db)
+    return tour.get_tour_by_id(tour_id)

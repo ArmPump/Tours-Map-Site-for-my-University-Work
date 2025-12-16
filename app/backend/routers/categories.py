@@ -26,6 +26,6 @@ def get_category_by_durations(category_durations: int, db: Session = Depends(get
     return service.get_category_by_duration(category_durations)
 
 @router.get("/category_difficulty/{category_difficulty}", response_model=CategoryResponse, status_code=status.HTTP_200_OK)
-def get_category_by_name(category_difficulty: str, db: Session = Depends(get_db)):
+def get_category_by_difficulty(category_difficulty: str, db: Session = Depends(get_db)):
     service = CategoryService(db)
     return service.get_category_by_difficulty(category_difficulty)
