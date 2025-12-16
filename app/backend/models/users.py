@@ -12,7 +12,7 @@ class User(Base):
     email = Column(String(100), unique=True, index=True, nullable=False)
     password = Column(String(64), index=True, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow())
-    profile_img = Column(String)
+    avatar = Column(String)
 
     def __repr__(self):
         return f"<User(id={self.id}, email='{self.email}', username='{self.username}')>"

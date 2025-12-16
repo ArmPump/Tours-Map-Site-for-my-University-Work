@@ -7,7 +7,7 @@ class UserBase(BaseModel):
                           description="Enter tour username")
     email: str = Field(..., min_length=5, max_length=128,
                        description="Enter your email address")
-    profile_img: Optional[str] = Field(None, description="User profile image")
+    avatar: Optional[str] = Field(None, description="User profile image")
 
 class UserCreate(UserBase):
     password: str = Field(..., min_length=5, max_length=32,
