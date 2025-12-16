@@ -18,7 +18,7 @@ class Tour(Base):
     preparation = Column(Text)
     duration_days = Column(Integer)
     difficulty = Column(String)
-    category_id = Column(Integer, ForeignKey("categories.id"), nullable=False)
+    category_id = Column(String, ForeignKey("categories.id"), nullable=False)
 
     categories = relationship("Category", back_populates="tours")
 
