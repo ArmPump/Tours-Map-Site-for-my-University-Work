@@ -59,3 +59,22 @@ class TourService:
         tours = self.tour_repository.get_by_difficulty(difficulty)
         tour_response = [TourResponse.model_validate(tour) for tour in tours]
         return TourListResponse(tours=tour_response, total=len(tour_response))
+
+    def create_tour(self, tour_data: TourCreate) -> TourResponse:
+        existing_tour = self.tour_repository.get_by_destination(tour_data.destination)
+        if existing_tour:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Tour with same destination {tour_data.destination} was found"
+            )
+        tour = self.tour_repository.create(tour_data)
+        return TourResponse.model_validate(tour)
+
+    def delete_tour(self, tour_id: id) -> dict:
+        deleted = self.tour_repository.delete(tour_id)
+        if not deleted:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Tour with ID {tour_id} not found"
+            )
+        return {"message": f"Tour {tour_id} deleted successfully"}

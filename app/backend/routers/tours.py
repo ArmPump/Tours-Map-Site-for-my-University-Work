@@ -10,6 +10,15 @@ router = APIRouter(
     tags=["tours"]
 )
 
+@router.post("/create", response_model=TourResponse, status_code=status.HTTP_201_CREATED)
+def create_tour(tour_data: TourCreate, db: Session = Depends(get_db)):
+    tour = TourService(db)
+    return tour.create_tour(tour_data)
+
+@router.delete("/delete", status_code=status.HTTP_200_OK)
+def delete_tour(tour_id: int, db: Session = Depends(get_db)):
+    tour = TourService(db)
+    return tour.delete_tour(tour_id)
 
 @router.get("", response_model=TourListResponse, status_code=status.HTTP_200_OK)
 def get_tours(db: Session = Depends(get_db)):

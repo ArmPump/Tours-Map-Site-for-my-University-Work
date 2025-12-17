@@ -70,37 +70,50 @@ class UserAPI {
     }
 }
 
-// ============ AUTH & PROFILE LOGIC ============
 function checkAuth() {
-    const username = localStorage.getItem('username');
-    const email = localStorage.getItem('email');
+  const username = localStorage.getItem('username');
+  const email = localStorage.getItem('email');
 
-    if (username && email) {
-        updateProfileButton(username);
-        return true;
-    }
-    return false;
+  if (username && email) {
+    updateProfileButton(username);
+    return true;
+  }
+  return false;
 }
 
 function updateProfileButton(username) {
-    const profileBtn = document.getElementById('headerProfileBtn');
-    const avatar = localStorage.getItem('avatar');
-    const firstLetter = username.charAt(0).toUpperCase();
+  const profileBtn = document.querySelector('.profile-btn') ||
+                      document.getElementById('headerProfileBtn');
 
-    if (avatar) {
-        profileBtn.innerHTML = `
-            <img src="${avatar}" style="width: 28px; height: 28px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.3);">
-            <span>${username}</span>
-        `;
-    } else {
-        profileBtn.innerHTML = `
-            <div style="width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700;">
-                ${firstLetter}
-            </div>
-            <span>${username}</span>
-        `;
-    }
+  if (!profileBtn) {
+    console.warn('Profile button not found');
+    return;
+  }
+
+  const avatar = localStorage.getItem('avatar');
+  const firstLetter = username.charAt(0).toUpperCase();
+
+  if (avatar) {
+    profileBtn.innerHTML = `
+      <img src="${avatar}" alt="${username}"
+           style="width: 28px; height: 28px; border-radius: 50%;
+                  object-fit: cover; border: 2px solid rgba(255,255,255,0.3);">
+      <span>${username}</span>
+    `;
+  } else {
+    profileBtn.innerHTML = `
+      <div style="width: 28px; height: 28px; border-radius: 50%;
+                  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+                  display: flex; align-items: center; justify-content: center;
+                  font-size: 14px; font-weight: 700; color: white;">
+        ${firstLetter}
+      </div>
+      <span>${username}</span>
+    `;
+  }
 }
+
+
 
 // !!! ИСПРАВЛЕНО: Теперь корректно открывает модалки !!!
 function handleProfileClick() {
@@ -125,33 +138,33 @@ function logout() {
 // ============ MODALS (AUTH & PROFILE) ============
 function openAuthModal() {
     const modal = document.getElementById('authModal');
-    // Заполняем HTML только если пусто
-    if (!modal.innerHTML.trim()) {
-        modal.innerHTML = `
-            <button class="close-modal" onclick="closeAuthModal()">&times;</button>
-            <div class="modal-header">
-                <h2 class="modal-title" id="modalTitle">Авторизация</h2>
-                <p class="modal-subtitle" id="modalSubtitle">Войдите чтобы продолжить</p>
+
+    modal.innerHTML = `
+        <button class="close-modal" onclick="closeAuthModal()">&times;</button>
+        <div class="modal-header">
+            <h2 class="modal-title" id="modalTitle">Авторизация</h2>
+            <p class="modal-subtitle" id="modalSubtitle">Войдите чтобы продолжить</p>
+        </div>
+        <form id="authForm" onsubmit="handleAuthSubmit(event)">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" required>
             </div>
-            <form id="authForm" onsubmit="handleAuthSubmit(event)">
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" required>
-                </div>
-                <div class="form-group">
-                    <label for="password">Пароль</label>
-                    <input type="password" id="password" required minlength="8">
-                </div>
-                <button type="submit" class="submit-btn" id="submitBtn">Войти</button>
-            </form>
-            <div class="toggle-mode">
-                <span id="toggleText">Нет аккаунта?</span>
-                <a onclick="toggleAuthMode()" id="toggleLink">Регистрация</a>
+            <div class="form-group">
+                <label for="password">Пароль</label>
+                <input type="password" id="password" required minlength="8">
             </div>
-        `;
-    }
+            <button type="submit" class="submit-btn" id="submitBtn">Войти</button>
+        </form>
+        <div class="toggle-mode">
+            <span id="toggleText">Нет аккаунта?</span>
+            <a onclick="toggleAuthMode()" id="toggleLink">Зарегистрироваться</a>
+        </div>
+    `;
+
     modal.classList.add('show');
 }
+
 
 function closeAuthModal() {
     document.getElementById('authModal').classList.remove('show');
@@ -205,58 +218,137 @@ async function handleAuthSubmit(event) {
 function openProfileModal() {
     const modal = document.getElementById('profileModal');
 
-    if (!modal.innerHTML.trim()) {
-        modal.innerHTML = `
-            <button class="close-modal" onclick="closeProfileModal()">&times;</button>
-            <div class="profile-header">
-                <div class="profile-avatar-section">
-                    <div class="profile-avatar-wrapper">
-                        <div class="profile-avatar" id="profileAvatar">U</div>
-                        <img id="profileAvatarImage" class="profile-avatar-image" style="display: none;">
-                    </div>
-                    <input type="file" id="avatarInput" accept="image/*" style="display: none;" onchange="handleAvatarUpload(event)">
-                    <button class="avatar-upload-btn" onclick="document.getElementById('avatarInput').click()">
-                        Поставить изображение
-                    </button>
+    // ВСЕГДА генерируем HTML заново (убрали проверку!)
+    modal.innerHTML = `
+        <button class="close-modal" onclick="closeProfileModal()">&times;</button>
+
+        <div class="profile-header">
+            <!-- Аватар слева -->
+            <div class="profile-avatar-section">
+                <div class="profile-avatar-wrapper">
+                    <div class="profile-avatar" id="profileAvatar">U</div>
+                    <img id="profileAvatarImage" class="profile-avatar-image" style="display: none;">
                 </div>
-                <div class="profile-info-section">
-                    <div class="profile-info-item">
-                        <span class="profile-info-label">Email:</span>
-                        <div class="profile-info-value" id="profileEmail">loading...</div>
-                    </div>
-                    <div class="profile-info-item">
-                        <span class="profile-info-label">Имя:</span>
-                        <div class="profile-info-value" id="profileUsername">loading...</div>
-                    </div>
-                    <button class="change-password-btn" onclick="logout()" style="background: rgba(255,255,255,0.1); margin-top: 10px;">
-                        Выйти из аккаунта
-                    </button>
-                    <button class="delete-account-btn" onclick="deleteAccount()">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                        </svg>
-                        Удалить аккаунт
-                    </button>
-                </div>
+                <input type="file" id="avatarInput" accept="image/*" style="display: none;" onchange="handleAvatarUpload(event)">
+                <button class="avatar-upload-btn" onclick="document.getElementById('avatarInput').click()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                        <circle cx="12" cy="13" r="4"></circle>
+                    </svg>
+                    <span>Поставить изображение</span>
+                </button>
             </div>
-        `;
-    }
 
-    const username = localStorage.getItem('username');
-    const email = localStorage.getItem('email');
-    const avatar = localStorage.getItem('avatar');
+            <!-- Информация о пользователе справа -->
+            <div class="profile-info-section">
+                <div class="profile-info-item">
+                    <span class="profile-info-label">Email:</span>
+                    <div class="profile-info-value" id="profileEmail">loading...</div>
+                </div>
+                <div class="profile-info-item">
+                    <span class="profile-info-label">Имя пользователя:</span>
+                    <div class="profile-info-value-editable">
+                        <input type="text" id="profileUsernameInput" class="profile-username-input" value="loading..." onblur="saveUsername()">
+                        <button class="edit-username-btn" onclick="editUsername()" title="Изменить">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="profile-info-item">
+                    <span class="profile-info-label">Пароль:</span>
+                    <button class="change-password-btn" onclick="changePassword()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        <span>Изменить пароль</span>
+                    </button>
+                </div>
 
-    document.getElementById('profileEmail').textContent = email;
-    document.getElementById('profileUsername').textContent = username;
-    document.getElementById('profileAvatar').textContent = username.charAt(0).toUpperCase();
+                <!-- Кнопка выйти -->
+                <button class="change-password-btn" onclick="logout()" style="background: rgba(255,255,255,0.1); margin-top: 10px;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    <span>Выйти из аккаунта</span>
+                </button>
 
-    if (avatar) {
-        const img = document.getElementById('profileAvatarImage');
-        img.src = avatar;
-        img.style.display = 'block';
-    }
+                <!-- Кнопка удалить аккаунт -->
+                <button class="delete-account-btn" onclick="deleteAccount()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                    <span>Удалить аккаунт</span>
+                </button>
+            </div>
+        </div>
+    `;
+
+    // ТЕПЕРЬ загружаем данные (HTML уже в DOM!)
+    loadProfileData();
 
     modal.classList.add('show');
+}
+
+function loadProfileData() {
+    const username = localStorage.getItem('username') || 'User';
+    const email = localStorage.getItem('email') || 'user@example.com';
+    const avatar = localStorage.getItem('avatar');
+
+    // Проверяем что элементы существуют
+    const emailEl = document.getElementById('profileEmail');
+    const usernameEl = document.getElementById('profileUsernameInput');
+    const avatarEl = document.getElementById('profileAvatar');
+    const avatarImgEl = document.getElementById('profileAvatarImage');
+
+    if (emailEl) emailEl.textContent = email;
+    if (usernameEl) usernameEl.value = username;
+
+    const firstLetter = username.charAt(0).toUpperCase();
+    if (avatarEl) avatarEl.textContent = firstLetter;
+
+    // Загрузка аватара если есть
+    if (avatar && avatarImgEl) {
+        avatarImgEl.src = avatar;
+        avatarImgEl.style.display = 'block';
+    } else if (avatarImgEl) {
+        avatarImgEl.style.display = 'none';
+    }
+}
+
+function editUsername() {
+    const input = document.getElementById('profileUsernameInput');
+    if (input) {
+        input.focus();
+        input.select();
+    }
+}
+
+function saveUsername() {
+    const input = document.getElementById('profileUsernameInput');
+    if (!input) return;
+
+    const newUsername = input.value.trim();
+    if (newUsername && newUsername !== localStorage.getItem('username')) {
+        localStorage.setItem('username', newUsername);
+        updateProfileButton(newUsername);
+        alert('✅ Имя пользователя сохранено!');
+    }
+}
+
+function changePassword() {
+    const newPassword = prompt('Введите новый пароль:');
+    if (newPassword && newPassword.length >= 8) {
+        localStorage.setItem('password', newPassword);
+        alert('✅ Пароль успешно изменен!');
+    } else if (newPassword) {
+        alert('❌ Пароль должен быть минимум 8 символов');
+    }
 }
 
 function closeProfileModal() {
@@ -538,3 +630,44 @@ async function applyFilters() {
     renderTours(filteredTours);
     updateResultsInfo();
 }
+
+
+// ========== УПРАВЛЕНИЕ DURATION SHEET ==========
+function openDurationSheet() {
+  const sheet = document.querySelector('.duration-sheet');
+  const container = document.querySelector('.scroll-container');
+
+  if (sheet) {
+    sheet.classList.add('show');
+  }
+
+  if (container) {
+    container.classList.add('duration-open');
+  }
+}
+
+function closeDurationSheet() {
+  const sheet = document.querySelector('.duration-sheet');
+  const container = document.querySelector('.scroll-container');
+
+  if (sheet) {
+    sheet.classList.remove('show');
+  }
+
+  if (container) {
+    container.classList.remove('duration-open');
+  }
+}
+
+// Если у вас есть кнопка открытия duration sheet, добавьте обработчик:
+// document.querySelector('.duration-filter-btn')?.addEventListener('click', openDurationSheet);
+
+
+// В конце tours.js должно быть:
+document.addEventListener('DOMContentLoaded', async () => {
+  checkAuth();
+  await loadTours(); // ← Эта функция должна вызываться
+  updateAllTranslations();
+});
+
+

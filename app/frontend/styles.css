@@ -1,3 +1,65 @@
+/* ========== CSS ПЕРЕМЕННЫЕ ДЛЯ ТЕМ ========== */
+:root {
+  /* Темная тема (по умолчанию) */
+  --bg-primary: #0a0e27;
+  --bg-secondary: #1a1f3a;
+  --bg-card: rgba(10, 14, 39, 0.95);
+  --bg-input: rgba(255, 255, 255, 0.05);
+
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --text-muted: rgba(255, 255, 255, 0.6);
+
+  --border-color: rgba(255, 255, 255, 0.1);
+  --border-hover: rgba(102, 126, 234, 0.5);
+
+  --shadow-sm: 0 4px 15px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.5);
+
+  --accent-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* СВЕТЛАЯ ТЕМА */
+body.light-theme,
+html.light-theme {
+  --bg-primary: #f5f7fa;
+  --bg-secondary: #ffffff;
+  --bg-card: #ffffff;
+  --bg-input: #f9fafb;
+
+  --text-primary: #1a202c;
+  --text-secondary: rgba(26, 32, 44, 0.8);
+  --text-muted: rgba(26, 32, 44, 0.65);
+
+  --border-color: rgba(15, 23, 42, 0.08);
+  --border-hover: rgba(79, 70, 229, 0.3);
+
+  --shadow-sm: 0 4px 15px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 8px 30px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 20px 60px rgba(15, 23, 42, 0.1);
+
+  --accent-gradient: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+}
+
+/* ========== КАРТА - ВСЕГДА ТЕМНАЯ ========== */
+#mapContainer {
+  background: #0a0e27 !important;
+}
+
+body.light-theme #mapContainer {
+  background: #0a0e27 !important;
+}
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+
+
+
 /* ========== ОБЩИЕ СТИЛИ ========== */
 * {
     margin: 0;
@@ -229,26 +291,6 @@ html, body {
     align-items: center;
 }
 
-.theme-toggle {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 14px;
-    background: rgba(15, 23, 42, 0.85);
-    border: 1px solid rgba(148, 163, 184, 0.5);
-    border-radius: 999px;
-    color: #e5e7eb;
-    cursor: pointer;
-    font-size: 13px;
-    font-weight: 500;
-    transition: all 0.3s ease;
-}
-
-.theme-toggle:hover {
-    background: rgba(15, 23, 42, 1);
-    border-color: rgba(129, 140, 248, 0.9);
-    transform: translateY(-2px);
-}
 
 .profile-btn {
     display: flex;
@@ -1726,3 +1768,807 @@ body.light-theme .mini-tooltip {
 body.light-theme .mini-tooltip::after {
     border-color: #ffffff transparent transparent transparent;
 }
+
+
+/* ========== СОВРЕМЕННАЯ КНОПКА ПЕРЕКЛЮЧЕНИЯ ТЕМЫ ========== */
+/* ========== КНОПКА ТЕМЫ — НЕОНОВЫЙ СТИЛЬ ========== */
+/* ========== КНОПКА ТЕМЫ — НЕОНОВЫЙ СТИЛЬ (ФИНАЛЬНАЯ ВЕРСИЯ) ========== */
+.modern-theme-toggle {
+  position: fixed !important;
+  top: 90px !important;
+  right: 32px !important;
+  width: 56px !important;
+  height: 56px !important;
+  border-radius: 16px !important;
+  border: 2px solid rgba(102, 126, 234, 0.3) !important;
+  background: rgba(10, 14, 39, 0.6) !important;
+  backdrop-filter: blur(20px) !important;
+  cursor: pointer !important;
+  z-index: 10000 !important;
+  transition: all 0.3s ease !important;
+  overflow: hidden !important;
+  box-shadow:
+    0 0 20px rgba(102, 126, 234, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+  padding: 0 !important;
+  display: block !important;
+}
+
+.modern-theme-toggle::before {
+  content: '' !important;
+  position: absolute !important;
+  top: -50% !important;
+  left: -50% !important;
+  width: 200% !important;
+  height: 200% !important;
+  background: conic-gradient(
+    transparent,
+    rgba(102, 126, 234, 0.3),
+    transparent 30%
+  ) !important;
+  animation: neonRotate 4s linear infinite !important;
+  z-index: 0 !important;
+}
+
+@keyframes neonRotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.modern-theme-toggle::after {
+  content: '' !important;
+  position: absolute !important;
+  inset: 2px !important;
+  background: rgba(10, 14, 39, 0.9) !important;
+  border-radius: 14px !important;
+  z-index: 1 !important;
+}
+
+.modern-theme-toggle:hover {
+  border-color: rgba(102, 126, 234, 0.6) !important;
+  box-shadow:
+    0 0 30px rgba(102, 126, 234, 0.6),
+    0 0 50px rgba(102, 126, 234, 0.3),
+    inset 0 0 20px rgba(102, 126, 234, 0.2) !important;
+  transform: scale(1.05) !important;
+}
+
+.modern-theme-toggle .theme-icon {
+  width: 26px !important;
+  height: 26px !important;
+  stroke: rgba(255, 255, 255, 0.9) !important;
+  transition: all 0.4s ease !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  z-index: 2 !important;
+  filter: drop-shadow(0 0 8px rgba(102, 126, 234, 0.8)) !important;
+}
+
+.modern-theme-toggle .moon {
+  opacity: 1 !important;
+  transform: translate(-50%, -50%) rotate(0deg) scale(1) !important;
+}
+
+.modern-theme-toggle .sun {
+  opacity: 0 !important;
+  transform: translate(-50%, -50%) rotate(180deg) scale(0.3) !important;
+}
+
+.modern-theme-toggle.light .moon {
+  opacity: 0 !important;
+  transform: translate(-50%, -50%) rotate(-180deg) scale(0.3) !important;
+}
+
+.modern-theme-toggle.light .sun {
+  opacity: 1 !important;
+  transform: translate(-50%, -50%) rotate(0deg) scale(1) !important;
+  stroke: #fbbf24 !important;
+  filter: drop-shadow(0 0 12px rgba(251, 191, 36, 0.9)) !important;
+}
+
+/* Светлая тема кнопки */
+body.light-theme .modern-theme-toggle {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border-color: rgba(79, 70, 229, 0.3) !important;
+  box-shadow:
+    0 0 20px rgba(79, 70, 229, 0.2),
+    inset 0 1px 0 rgba(15, 23, 42, 0.05) !important;
+}
+
+body.light-theme .modern-theme-toggle::after {
+  background: rgba(255, 255, 255, 0.95) !important;
+}
+
+body.light-theme .modern-theme-toggle::before {
+  background: conic-gradient(
+    transparent,
+    rgba(79, 70, 229, 0.2),
+    transparent 30%
+  ) !important;
+}
+
+body.light-theme .modern-theme-toggle .theme-icon {
+  stroke: rgba(26, 32, 44, 0.8) !important;
+}
+
+body.light-theme .modern-theme-toggle:hover {
+  border-color: rgba(79, 70, 229, 0.5) !important;
+  box-shadow:
+    0 0 30px rgba(79, 70, 229, 0.3),
+    inset 0 0 20px rgba(79, 70, 229, 0.1) !important;
+}
+
+/* ========== СВЕТЛАЯ ТЕМА — БАЗОВЫЕ ПЕРЕМЕННЫЕ ========== */
+body.light-theme {
+  background: #f5f7fb;
+  color: #1a202c;
+}
+
+body.light-theme #mapContainer {
+  background: #ffffff;
+}
+
+body.light-theme .modern-header {
+  background: rgba(255, 255, 255, 0.92);
+  border-bottom-color: rgba(15, 23, 42, 0.08);
+  box-shadow: 0 2px 20px rgba(15, 23, 42, 0.06);
+}
+
+body.light-theme .nav-link {
+  color: rgba(26, 32, 44, 0.7);
+}
+
+body.light-theme .nav-link:hover,
+body.light-theme .nav-link.active {
+  color: #1a202c;
+  background: rgba(79, 70, 229, 0.08);
+}
+
+body.light-theme .modern-theme-toggle {
+  background: rgba(15, 23, 42, 0.06);
+}
+
+body.light-theme .modern-theme-toggle:hover {
+  background: rgba(15, 23, 42, 0.12);
+  box-shadow:
+    0 12px 40px rgba(79, 70, 229, 0.15),
+    inset 0 1px 0 rgba(15, 23, 42, 0.1);
+}
+
+body.light-theme .modern-theme-toggle .theme-icon {
+  stroke: #1a202c;
+}
+
+/* ========== СВЕТЛАЯ ТЕМА — МОДАЛКИ ========== */
+body.light-theme .modal-overlay,
+body.light-theme .tour-detail-overlay,
+body.light-theme .country-tours-modal {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+}
+
+body.light-theme .modal-content,
+body.light-theme .profile-modal > div:first-child,
+body.light-theme .tour-detail-content,
+body.light-theme .country-tours-content {
+  background: #ffffff;
+  border-color: rgba(15, 23, 42, 0.08);
+  box-shadow: 0 30px 80px rgba(15, 23, 42, 0.12);
+  color: #1a202c;
+}
+
+body.light-theme .tour-detail-content h2,
+body.light-theme .country-tours-header h3 {
+  background: linear-gradient(135deg, #7020c6 0%, #150b5f 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+body.light-theme .info-block {
+  background: rgba(79, 70, 229, 0.04);
+  border-color: rgba(79, 70, 229, 0.12);
+}
+
+body.light-theme .info-block h4 {
+  color: #1a202c;
+}
+
+body.light-theme .info-block p {
+  color: rgba(26, 32, 44, 0.75);
+}
+
+body.light-theme .close-tour-detail,
+body.light-theme .close-country-modal,
+body.light-theme .close-modal {
+  background: rgba(15, 23, 42, 0.06);
+  border-color: rgba(15, 23, 42, 0.08);
+  color: rgba(26, 32, 44, 0.7);
+}
+
+body.light-theme .close-tour-detail:hover,
+body.light-theme .close-country-modal:hover {
+  background: rgba(15, 23, 42, 0.12);
+  color: #1a202c;
+}
+
+/* ========== СВЕТЛАЯ ТЕМА — СКРОЛЛБАРЫ (УНИВЕРСАЛЬНО) ========== */
+body.light-theme *::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+body.light-theme *::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.04);
+  border-radius: 10px;
+}
+
+body.light-theme *::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #4f46e5 0%, #6366f1 100%);
+  border-radius: 10px;
+  border: 2px solid #ffffff;
+}
+
+body.light-theme *::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #4338ca 0%, #4f46e5 100%);
+}
+
+body.light-theme * {
+  scrollbar-width: thin;
+  scrollbar-color: #4f46e5 rgba(15, 23, 42, 0.04);
+}
+
+/* ========== СВЕТЛАЯ ТЕМА — КАРТОЧКИ ТУРОВ В МОДАЛКЕ ========== */
+body.light-theme .country-tours-carousel .tour-card {
+  background: #ffffff;
+  border-color: rgba(15, 23, 42, 0.08);
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
+}
+
+body.light-theme .country-tours-carousel .tour-card:hover {
+  border-color: rgba(79, 70, 229, 0.3);
+  box-shadow:
+    0 20px 40px rgba(15, 23, 42, 0.12),
+    0 0 30px rgba(79, 70, 229, 0.08);
+}
+
+body.light-theme .country-tours-carousel .tour-card-content {
+  background: #ffffff;
+}
+
+body.light-theme .country-tours-carousel .tour-card-destination {
+  color: #1a202c;
+}
+
+body.light-theme .country-tours-carousel .tour-card-duration {
+  color: rgba(26, 32, 44, 0.6);
+}
+
+body.light-theme .country-tours-carousel .tour-card-price {
+  background: linear-gradient(90deg, #4f46e5 0%, #6366f1 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+body.light-theme .carousel-btn {
+  background: rgba(15, 23, 42, 0.06);
+  border-color: rgba(15, 23, 42, 0.08);
+  color: #1a202c;
+}
+
+body.light-theme .carousel-btn:hover:not(:disabled) {
+  background: #1a202c;
+  color: #ffffff;
+}
+
+
+/* ========== НЕОНОВАЯ КНОПКА ТЕМЫ (ФИНАЛЬНАЯ ВЕРСИЯ) ========== */
+.modern-theme-toggle {
+  position: fixed !important;
+  top: 90px !important;
+  right: 32px !important;
+  width: 56px !important;
+  height: 56px !important;
+  border-radius: 16px !important;
+  border: 2px solid rgba(102, 126, 234, 0.3) !important;
+  background: rgba(10, 14, 39, 0.6) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  cursor: pointer !important;
+  z-index: 99999 !important;
+  transition: all 0.3s ease !important;
+  overflow: hidden !important;
+  box-shadow: 0 0 20px rgba(102, 126, 234, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: block !important;
+  outline: none !important;
+}
+
+.modern-theme-toggle::before {
+  content: '' !important;
+  position: absolute !important;
+  top: -50% !important;
+  left: -50% !important;
+  width: 200% !important;
+  height: 200% !important;
+  background: conic-gradient(transparent, rgba(102, 126, 234, 0.3), transparent 30%) !important;
+  animation: neonRotate 4s linear infinite !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+}
+
+@keyframes neonRotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.modern-theme-toggle::after {
+  content: '' !important;
+  position: absolute !important;
+  inset: 2px !important;
+  background: rgba(10, 14, 39, 0.9) !important;
+  border-radius: 14px !important;
+  z-index: 1 !important;
+  pointer-events: none !important;
+}
+
+.modern-theme-toggle:hover {
+  border-color: rgba(102, 126, 234, 0.6) !important;
+  box-shadow: 0 0 30px rgba(102, 126, 234, 0.6), 0 0 50px rgba(102, 126, 234, 0.3), inset 0 0 20px rgba(102, 126, 234, 0.2) !important;
+  transform: scale(1.05) !important;
+}
+
+.modern-theme-toggle .theme-icon {
+  width: 26px !important;
+  height: 26px !important;
+  stroke: rgba(255, 255, 255, 0.9) !important;
+  transition: all 0.4s ease !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  z-index: 2 !important;
+  filter: drop-shadow(0 0 8px rgba(102, 126, 234, 0.8)) !important;
+  pointer-events: none !important;
+}
+
+.modern-theme-toggle .moon {
+  opacity: 1 !important;
+  transform: translate(-50%, -50%) rotate(0deg) scale(1) !important;
+}
+
+.modern-theme-toggle .sun {
+  opacity: 0 !important;
+  transform: translate(-50%, -50%) rotate(180deg) scale(0.3) !important;
+}
+
+.modern-theme-toggle.light .moon {
+  opacity: 0 !important;
+  transform: translate(-50%, -50%) rotate(-180deg) scale(0.3) !important;
+}
+
+.modern-theme-toggle.light .sun {
+  opacity: 1 !important;
+  transform: translate(-50%, -50%) rotate(0deg) scale(1) !important;
+  stroke: #fbbf24 !important;
+  filter: drop-shadow(0 0 12px rgba(251, 191, 36, 0.9)) !important;
+}
+
+/* Светлая тема */
+body.light-theme .modern-theme-toggle {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border-color: rgba(79, 70, 229, 0.3) !important;
+  box-shadow: 0 0 20px rgba(79, 70, 229, 0.2), inset 0 1px 0 rgba(15, 23, 42, 0.05) !important;
+}
+
+body.light-theme .modern-theme-toggle::after {
+  background: rgba(255, 255, 255, 0.95) !important;
+}
+
+body.light-theme .modern-theme-toggle::before {
+  background: conic-gradient(transparent, rgba(79, 70, 229, 0.2), transparent 30%) !important;
+}
+
+body.light-theme .modern-theme-toggle .theme-icon {
+  stroke: rgba(26, 32, 44, 0.8) !important;
+}
+
+body.light-theme .modern-theme-toggle:hover {
+  border-color: rgba(79, 70, 229, 0.5) !important;
+  box-shadow: 0 0 30px rgba(79, 70, 229, 0.3), inset 0 0 20px rgba(79, 70, 229, 0.1) !important;
+}
+
+/* ========== ИСПРАВЛЕНИЕ СВЕТЛОЙ ТЕМЫ: Country Info Panel ========== */
+
+body.light-theme .country-info-panel {
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  box-shadow: 0 10px 40px rgba(15, 23, 42, 0.15);
+}
+
+body.light-theme .country-info-content h3 {
+  color: #1a202c;
+}
+
+body.light-theme .country-tours-count {
+  color: rgba(26, 32, 44, 0.8);
+}
+
+body.light-theme .country-tours-count svg {
+  color: #4f46e5;
+}
+
+/* ========== ИСПРАВЛЕНИЕ СВЕТЛОЙ ТЕМЫ: Dropdown меню ========== */
+
+body.light-theme .select-trigger {
+  background: #f9fafb;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  color: #1a202c;
+}
+
+body.light-theme .select-trigger svg {
+  stroke: rgba(26, 32, 44, 0.6);
+}
+
+body.light-theme .select-trigger:hover {
+  background: #ffffff;
+  border-color: rgba(79, 70, 229, 0.3);
+}
+
+body.light-theme .select-dropdown {
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  box-shadow: 0 10px 40px rgba(15, 23, 42, 0.15);
+}
+
+body.light-theme .select-option {
+  color: rgba(26, 32, 44, 0.85);
+}
+
+body.light-theme .select-option:hover {
+  background: rgba(129, 140, 248, 0.12);
+  color: #1a202c;
+}
+
+body.light-theme .select-option.selected {
+  background: rgba(79, 70, 229, 0.15);
+  color: #1a202c;
+  font-weight: 600;
+}
+
+/* ========== ИСПРАВЛЕНИЕ СВЕТЛОЙ ТЕМЫ: Country Tours Modal ========== */
+
+body.light-theme .country-tours-modal {
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  box-shadow: 0 40px 100px rgba(15, 23, 42, 0.2);
+}
+
+body.light-theme .country-tours-header h3 {
+  background: linear-gradient(135deg, #1a202c 0%, #4b5563 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+body.light-theme .close-country-modal {
+  color: rgba(26, 32, 44, 0.6);
+}
+
+body.light-theme .close-country-modal:hover {
+  color: #1a202c;
+  background: rgba(15, 23, 42, 0.05);
+}
+
+/* ========== ИСПРАВЛЕНИЕ СВЕТЛОЙ ТЕМЫ: Navigation Links ========== */
+
+body.light-theme .nav-link {
+  color: rgba(26, 32, 44, 0.7);
+}
+
+body.light-theme .nav-link:hover,
+body.light-theme .nav-link.active {
+  color: #1a202c;
+  background: rgba(15, 23, 42, 0.05);
+}
+
+body.light-theme .nav-link svg {
+  stroke: rgba(26, 32, 44, 0.7);
+}
+
+body.light-theme .nav-link:hover svg,
+body.light-theme .nav-link.active svg {
+  stroke: #1a202c;
+}
+
+/* ========== ИСПРАВЛЕНИЕ СВЕТЛОЙ ТЕМЫ: Toggle Mode Links ========== */
+
+body.light-theme .toggle-mode {
+  color: rgba(26, 32, 44, 0.7);
+}
+
+body.light-theme .toggle-mode a {
+  color: #4f46e5;
+}
+
+body.light-theme .toggle-mode a:hover {
+  color: #4338ca;
+}
+
+/* ========== ИСПРАВЛЕНИЕ СВЕТЛОЙ ТЕМЫ: Placeholder текст ========== */
+
+body.light-theme input::placeholder,
+body.light-theme select::placeholder,
+body.light-theme textarea::placeholder {
+  color: rgba(26, 32, 44, 0.5);
+}
+
+/* ========== ИСПРАВЛЕНИЕ: Название страны при наведении ========== */
+
+/* ВАЖНО: !important чтобы перебить все остальные стили */
+body.light-theme .country-info-panel {
+  background: rgba(255, 255, 255, 0.98) !important;
+  border: 1px solid rgba(15, 23, 42, 0.12) !important;
+  box-shadow: 0 10px 40px rgba(15, 23, 42, 0.15) !important;
+}
+
+body.light-theme .country-info-content h3 {
+  color: #1a202c !important;
+  background: none !important;
+  -webkit-text-fill-color: #1a202c !important;
+}
+
+body.light-theme .country-tours-count {
+  color: rgba(26, 32, 44, 0.8) !important;
+}
+
+body.light-theme .country-tours-count svg {
+  color: #4f46e5 !important;
+  stroke: #4f46e5 !important;
+  fill: #4f46e5 !important;
+}
+
+/* ========== ИСПРАВЛЕНИЕ: Модальное окно тура (tour-detail-modal) ========== */
+
+/* Модальное окно детального описания тура */
+body.light-theme .tour-detail-modal {
+  background: rgba(255, 255, 255, 0.98) !important;
+  border: 1px solid rgba(15, 23, 42, 0.08) !important;
+  box-shadow: 0 40px 100px rgba(15, 23, 42, 0.2) !important;
+}
+
+/* Заголовок модального окна */
+body.light-theme .tour-detail-header h2,
+body.light-theme .tour-detail-header h3,
+body.light-theme .tour-detail-title {
+  color: #1a202c !important;
+  background: linear-gradient(135deg, #1a202c 0%, #4b5563 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+/* Весь текст в модальном окне */
+body.light-theme .tour-detail-content,
+body.light-theme .tour-detail-content p,
+body.light-theme .tour-detail-content div,
+body.light-theme .tour-detail-content span,
+body.light-theme .tour-detail-description {
+  color: rgba(26, 32, 44, 0.85) !important;
+}
+
+/* Подзаголовки */
+body.light-theme .tour-detail-content h4,
+body.light-theme .tour-detail-content h5 {
+  color: #1a202c !important;
+}
+
+/* Кнопка закрытия */
+body.light-theme .close-tour-detail,
+body.light-theme .tour-detail-close,
+body.light-theme .close-tour-modal {
+  color: rgba(26, 32, 44, 0.6) !important;
+  background: none !important;
+}
+
+body.light-theme .close-tour-detail:hover,
+body.light-theme .tour-detail-close:hover,
+body.light-theme .close-tour-modal:hover {
+  color: #1a202c !important;
+  background: rgba(15, 23, 42, 0.05) !important;
+}
+
+/* Цена тура */
+body.light-theme .tour-detail-price,
+body.light-theme .tour-price {
+  color: #4f46e5 !important;
+  background: none !important;
+  -webkit-text-fill-color: #4f46e5 !important;
+}
+
+/* Бейджи (категория, сложность, длительность) */
+body.light-theme .tour-detail-badge,
+body.light-theme .tour-badge {
+  background: rgba(79, 70, 229, 0.1) !important;
+  color: #4f46e5 !important;
+  border-color: rgba(79, 70, 229, 0.2) !important;
+}
+
+/* Кнопка "Забронировать" */
+body.light-theme .tour-detail-book-btn,
+body.light-theme .book-tour-btn {
+  background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%) !important;
+  color: #ffffff !important;
+}
+
+/* Иконки в модальном окне */
+body.light-theme .tour-detail-icon,
+body.light-theme .tour-detail-content svg {
+  stroke: rgba(26, 32, 44, 0.7) !important;
+  fill: rgba(26, 32, 44, 0.7) !important;
+}
+
+/* Разделители */
+body.light-theme .tour-detail-divider {
+  border-color: rgba(15, 23, 42, 0.08) !important;
+}
+
+/* Мета информация (даты, участники) */
+body.light-theme .tour-detail-meta,
+body.light-theme .tour-meta-item {
+  color: rgba(26, 32, 44, 0.7) !important;
+}
+
+body.light-theme .tour-meta-label {
+  color: rgba(26, 32, 44, 0.6) !important;
+}
+
+body.light-theme .tour-meta-value {
+  color: #1a202c !important;
+}
+
+/* Оверлей (затемнение фона) */
+body.light-theme .modal-overlay {
+  background: rgba(255, 255, 255, 0.7) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+/* Список особенностей тура */
+body.light-theme .tour-detail-list li,
+body.light-theme .tour-features li {
+  color: rgba(26, 32, 44, 0.85) !important;
+}
+
+body.light-theme .tour-detail-list li::before,
+body.light-theme .tour-features li::before {
+  color: #4f46e5 !important;
+}
+
+/* ========== УНИВЕРСАЛЬНЫЕ ПОЛЗУНКИ ДЛЯ ВСЕГО САЙТА ========== */
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+  border-radius: 10px;
+  border: 2px solid rgba(10, 14, 39, 0.95);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #764ba2 0%, #667eea 100%);
+}
+
+/* Светлая тема - белая граница */
+body.light-theme ::-webkit-scrollbar-thumb {
+  border: 2px solid #ffffff !important;
+}
+
+
+
+/* ========== КРАСИВЫЙ СИНИЙ ФОН КАРТЫ МИРА ========== */
+
+/* Темная тема - глубокий океанический синий */
+#mapContainer {
+  background: linear-gradient(180deg, #0f172a 0%, #354968 50%, #192f64 100%) !important;
+}
+
+body #mapContainer {
+  background: linear-gradient(180deg, #0f172a 0%, #1e293b 50%, #0f172a 100%) !important;
+}
+
+/* Светлая тема - светлый небесно-голубой */
+body.light-theme #mapContainer {
+  background: linear-gradient(180deg, #406aa1 0%, #2f4661 50%, #8db9f3 100%) !important;
+}
+
+
+/* ========== ВСПЛЫВАЮЩАЯ ПОДСКАЗКА ПРИ НАВЕДЕНИИ НА СТРАНУ ========== */
+
+/* Темная тема */
+.mini-tooltip {
+  position: absolute;
+  pointer-events: none;
+  z-index: 1500;
+  background: rgba(10, 14, 39, 0.95);
+  backdrop-filter: blur(20px);
+  padding: 12px 18px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+  color: #ffffff;
+}
+
+.tooltip-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff !important;
+  margin-bottom: 6px;
+}
+
+.tooltip-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.tooltip-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4ade80;
+  box-shadow: 0 0 0 4px rgba(74, 222, 128, 0.2);
+}
+
+/* Светлая тема */
+body.light-theme .mini-tooltip {
+  background: rgba(255, 255, 255, 0.98) !important;
+  border: 1px solid rgba(15, 23, 42, 0.12) !important;
+  box-shadow: 0 8px 30px rgba(15, 23, 42, 0.15) !important;
+}
+
+body.light-theme .tooltip-name {
+  color: #1a202c !important;
+}
+
+body.light-theme .tooltip-badge {
+  color: rgba(26, 32, 44, 0.8) !important;
+}
+
+body.light-theme .tooltip-dot {
+  background: #4f46e5;
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.2);
+}
+
+
+
+/* ========== ПРОФИЛЬ: Исправление текста в светлой теме ========== */
+
+/* 1. Метки полей (Email:, Username:, Password:) */
+body.light-theme .profile-info-label {
+  color: rgba(26, 32, 44, 0.7) !important;
+}
+
+/* 2. Заголовок "Избранные туры" */
+body.light-theme .tours-title {
+  color: #1a202c !important;
+}
+
+
+/* 5. Кнопки загрузки аватара */
+body.light-theme .avatar-upload-btn {
+  color: rgba(26, 32, 44, 0.8) !important;
+}
+
+/* 6. Кнопка редактирования имени */
+body.light-theme .edit-username-btn {
+  color: rgba(26, 32, 44, 0.8) !important;
+}
+
+

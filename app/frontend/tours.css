@@ -708,3 +708,154 @@ body.light-theme .scroll-container::-webkit-scrollbar-thumb:hover {
         width: 100%;
     }
 }
+
+/* ========== ФИКС: ПОЛОСКА ДЛИТЕЛЬНОСТИ НЕ ЗАХОДИТ ЗА КАРТОЧКИ ========== */
+.duration-sheet {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999; /* Выше всего */
+  pointer-events: auto;
+}
+
+/* Когда открыт duration sheet - добавляем отступ снизу */
+.scroll-container.duration-open {
+  padding-bottom: 180px;
+  transition: padding-bottom 0.3s ease;
+}
+
+.tours-grid {
+  position: relative;
+  z-index: 1;
+}
+
+/* ========== УЛУЧШЕННЫЕ СКРОЛЛБАРЫ ДЛЯ СВЕТЛОЙ ТЕМЫ ========== */
+body.light-theme .scroll-container::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #4f46e5 0%, #6366f1 100%);
+  border: 2px solid #f5f7fb;
+}
+
+body.light-theme .scroll-container::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.04);
+}
+
+body.light-theme .scroll-container::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #4338ca 0%, #4f46e5 100%);
+}
+
+/* Скроллбар для tour-detail-modal в светлой теме */
+body.light-theme .tour-detail-content::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #4f46e5 0%, #6366f1 100%);
+  border: 2px solid #ffffff;
+}
+
+body.light-theme .tour-detail-content::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.04);
+}
+
+/* ========== ДОПОЛНИТЕЛЬНЫЕ СТИЛИ СВЕТЛОЙ ТЕМЫ ДЛЯ СТРАНИЦЫ TOURS ========== */
+body.light-theme .hero-cta-note {
+  color: rgba(26, 32, 44, 0.65);
+}
+
+body.light-theme .tour-card-content {
+  background: #ffffff;
+}
+
+body.light-theme .tour-card-destination {
+  color: #1a202c;
+}
+
+body.light-theme .no-results-title {
+  color: #1a202c;
+}
+
+body.light-theme .no-results-text {
+  color: rgba(26, 32, 44, 0.65);
+}
+
+body.light-theme .loading-state {
+  color: rgba(26, 32, 44, 0.65);
+}
+
+
+/* ========== СВЕТЛАЯ ТЕМА ДЛЯ СТРАНИЦЫ ТУРОВ ========== */
+
+body.light-theme.tours-body {
+  background: var(--bg-primary);
+}
+
+body.light-theme .hero-title {
+  background: linear-gradient(135deg, #111827 0%, #4b5563 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+body.light-theme .hero-subtitle,
+body.light-theme .hero-cta-note,
+body.light-theme .stat-label,
+body.light-theme .no-results-text {
+  color: var(--text-secondary);
+}
+
+body.light-theme .filters-card,
+body.light-theme .tour-card {
+  background: var(--bg-card);
+  border-color: var(--border-color);
+  box-shadow: var(--shadow-md);
+}
+
+body.light-theme .tour-card-content {
+  background: var(--bg-card);
+}
+
+body.light-theme .tour-card-destination,
+body.light-theme .filters-title,
+body.light-theme .results-count,
+body.light-theme .no-results-title {
+  color: var(--text-primary);
+}
+
+body.light-theme .tour-card-price {
+  color: #4f46e5;
+}
+
+body.light-theme .select-trigger {
+  background: var(--bg-input);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+body.light-theme .select-dropdown {
+  background: var(--bg-card);
+}
+
+body.light-theme .select-option {
+  color: var(--text-secondary);
+}
+
+body.light-theme .select-option:hover {
+  background: rgba(129, 140, 248, 0.12);
+  color: var(--text-primary);
+}
+
+/* ========== ИСПРАВЛЕНИЕ: Подзаголовок героя в светлой теме ========== */
+
+body.light-theme .hero-subtitle {
+  color: rgba(26, 32, 44, 0.8) !important;
+}
+
+/* Также для заголовка badge (бейджик сверху) */
+body.light-theme .hero-badge {
+  background: rgba(79, 70, 229, 0.1) !important;
+  border-color: rgba(79, 70, 229, 0.25) !important;
+  color: rgba(26, 32, 44, 0.9) !important;
+}
+
+/* Дополнительно: заметка внизу */
+body.light-theme .hero-cta-note {
+  color: rgba(26, 32, 44, 0.7) !important;
+}
+
+

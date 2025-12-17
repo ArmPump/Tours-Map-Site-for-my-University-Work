@@ -1419,34 +1419,47 @@ const tooltip = d3.select('body').append('div')
     .style('z-index', '1500');
 
 function showCountryTooltip(event, d, count) {
-    const code = getCountryCode(d.id);
-    const name = countryNames[currentLang][code] || 'Unknown';
+  const code = getCountryCode(d.id);
+  const name = countryNames[currentLang][code] || 'Unknown';
 
-    // Формируем HTML: только название и бейдж (если есть туры)
-    let html = `<div class="tooltip-name">${name}</div>`;
+  // ДОБАВЛЕНО: Проверка темы
+  const isLightTheme = document.body.classList.contains('light-theme');
 
-    if (count > 0) {
-        html += `
-            <div class="tooltip-badge">
-                <span class="tooltip-dot"></span>
-                ${count} ${getTourWordForm(count, currentLang)}
-            </div>
-        `;
-    }
+  let html = `<div class="tooltip-name">${name}</div>`;
+  if (count > 0) {
+    html += `<div class="tooltip-badge">
+      <span class="tooltip-dot"></span>
+      ${count} ${getTourWordForm(count, currentLang)}
+    </div>`;
+  }
 
-    tooltip.html(html)
-        .classed('has-tours', count > 0)
-        .transition()
-        .duration(200)
-        .style('opacity', 1);
+  tooltip
+    .html(html)
+    .classed('has-tours', count > 0)
+    // ДОБАВЛЕНО: Динамический стиль в зависимости от темы
+    .style('background', isLightTheme ?
+      'rgba(255, 255, 255, 0.98)' :
+      'rgba(10, 14, 39, 0.95)'
+    )
+    .style('border', isLightTheme ?
+      '1px solid rgba(15, 23, 42, 0.12)' :
+      '1px solid rgba(255, 255, 255, 0.1)'
+    )
+    .style('box-shadow', isLightTheme ?
+      '0 8px 30px rgba(15, 23, 42, 0.15)' :
+      '0 8px 30px rgba(0, 0, 0, 0.5)'
+    )
+    .transition()
+    .duration(200)
+    .style('opacity', 1);
 
-    updateTooltipPosition(event);
+  updateTooltipPosition(event);
 
-    // Подсветка страны при наведении
-    if (count > 0) {
-        d3.select(`#country-${d.id}`).style('filter', 'drop-shadow(0 0 10px #4facfe)');
-    }
+  if (count > 0) {
+    d3.select(`#country-${d.id}`).style('filter', 'drop-shadow(0 0 10px #4facfe)');
+  }
 }
+
 
 function moveCountryTooltip(event) {
     updateTooltipPosition(event);
@@ -1601,6 +1614,54 @@ class UserAPI {
 
 
 
+// ========== ОБНОВЛЕНИЕ ЦВЕТОВ КАРТЫ ПРИ СМЕНЕ ТЕМЫ ==========
+function updateMapTheme(theme) {
+  if (!svg || !g) return;
+
+  const isLight = theme === 'light';
+
+  // Обновляем фон карты
+  const mapContainer = document.getElementById('mapContainer');
+  if (mapContainer) {
+    mapContainer.style.background = isLight ? '#ffffff' : '#0a0e27';
+  }
+
+  // Обновляем цвет океана (фон SVG)
+  if (svg) {
+    svg.style('background', isLight ? '#ffffff' : '#0a0e27');
+  }
+
+  // Обновляем цвета стран
+  if (g) {
+    g.selectAll('.country-path').each(function(d) {
+      const path = d3.select(this);
+      const countryCode = getCountryCode(d.id);
+      const hasTours = countryCode && getToursCountByCountry(countryCode) > 0;
+
+      if (hasTours) {
+        // Страны с турами
+        path.attr('fill', isLight ? 'rgba(79, 70, 229, 0.12)' : 'rgba(102, 126, 234, 0.15)');
+      } else {
+        // Обычные страны
+        const color = path.attr('data-original-color');
+        if (color && isLight) {
+          // Делаем цвета чуть светлее для светлой темы
+          path.attr('fill', d3.color(color).brighter(0.5).toString());
+        } else if (color) {
+          path.attr('fill', color);
+        }
+      }
+    });
+  }
+}
+
+// Вызываем обновление при загрузке карты
+const originalRenderMap = renderMap;
+renderMap = function() {
+  originalRenderMap();
+  const currentTheme = document.body.classList.contains('light-theme') ? 'light' : 'dark';
+  setTimeout(() => updateMapTheme(currentTheme), 100);
+};
 
 
 
