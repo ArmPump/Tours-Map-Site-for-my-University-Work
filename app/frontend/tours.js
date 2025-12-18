@@ -267,7 +267,16 @@ function openProfileModal() {
                         <span>Изменить пароль</span>
                     </button>
                 </div>
-
+                        <!-- Кнопка админ‑панели, видна только админу -->
+        <button class="change-password-btn" id="adminPanelBtn" style="display: none; margin-top: 10px;"
+                onclick="openAdminPanel()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <path d="M3 9h18M9 21V9"></path>
+            </svg>
+            <span>Админ‑панель</span>
+        </button>
                 <!-- Кнопка выйти -->
                 <button class="change-password-btn" onclick="logout()" style="background: rgba(255,255,255,0.1); margin-top: 10px;">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -319,7 +328,22 @@ function loadProfileData() {
     } else if (avatarImgEl) {
         avatarImgEl.style.display = 'none';
     }
+        const adminBtn = document.getElementById('adminPanelBtn');
+    if (adminBtn) {
+        const email = localStorage.getItem('email');
+        adminBtn.style.display = (email === 'admin@zhukovsky.com') ? 'flex' : 'none';
+    }
 }
+
+function openAdminPanel() {
+    const email = localStorage.getItem('email');
+    if (email === 'admin@zhukovsky.com') {
+        window.location.href = 'adminpanel.html';
+    } else {
+        alert('⛔ Доступ только для администратора');
+    }
+}
+
 
 function editUsername() {
     const input = document.getElementById('profileUsernameInput');

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Zhukovsky</title>
+    <link rel="stylesheet" href="adminpanel.css">
+</head>
+<body>
+
+    <!-- LOADER -->
+    <div id="pageLoader" class="page-loader">
+        <div class="spinner"></div>
+    </div>
+
+    <div class="admin-container">
+        <!-- Header -->
+        <header class="admin-header">
+            <div class="admin-title">
+                <h1>TravelMap Admin</h1>
+                <p>Управление турами и контентом</p>
+            </div>
+            <div class="admin-actions">
+                <button class="icon-btn" onclick="window.location.href='index.html'" title="На сайт">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                    </svg>
+                </button>
+                <!-- ПРОФИЛЬ УДАЛЕН -->
+            </div>
+        </header>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+                    </svg>
+                </div>
+                <div class="stat-info">
+                    <h3 id="totalTours">0</h3>
+                    <p>Всего туров</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="color: #2ed573;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                    </svg>
+                </div>
+                <div class="stat-info">
+                    <h3 id="totalValue">0 ₽</h3>
+                    <p>Общая стоимость</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="color: #ff4757;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                </div>
+                <div class="stat-info">
+                    <h3 id="totalCountries">0</h3>
+                    <p>Уникальных стран</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="content-panel">
+            <div class="panel-header">
+                <div class="search-box">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" id="searchInput" placeholder="Поиск тура..." oninput="filterTours()">
+                </div>
+                <button class="add-btn" onclick="openCreateModal()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    Добавить тур
+                </button>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Название</th>
+                            <th>Страна</th>
+                            <th>Цена</th>
+                            <th>Сложность</th>
+                            <th>Дни</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody id="toursTableBody">
+                        <!-- Туры будут здесь -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create/Edit Modal -->
+    <div id="tourModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal()">&times;</button>
+            <h2 id="modalTitle" style="margin-bottom: 2rem; margin-top: 0;">Добавить новый тур</h2>
+
+            <form id="tourForm" onsubmit="handleTourSubmit(event)">
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label>Название тура</label>
+                        <input type="text" id="destination" required placeholder="Например: Восхождение на Эльбрус">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Код страны (3 буквы)</label>
+                        <input type="text" id="country_code" required maxlength="3" placeholder="RUS" style="text-transform: uppercase;">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Цена (₽)</label>
+                        <input type="number" id="price" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Длительность (дней)</label>
+                        <input type="number" id="duration_days" required>
+                    </div>
+
+                                        <div class="form-group">
+                        <label>Сложность</label>
+                        <select id="difficulty">
+                            <option value="Легкая">Легкая</option>
+                            <option value="Средняя">Средняя</option>
+                            <option value="Высокая">Высокая</option>
+                            <option value="Экстремальная">Экстремальная</option>
+                        </select>
+                    </div>
+
+                    <!-- НОВОЕ ПОЛЕ КАТЕГОРИИ -->
+                    <div class="form-group">
+                        <label>Категория</label>
+                        <select id="category_id" required>
+                            <option value="">Загрузка...</option>
+                        </select>
+                    </div>
+
+
+
+
+                    <div class="form-group full-width">
+                        <label>Ссылка на изображение</label>
+                        <input type="url" id="image_url" required placeholder="https://...">
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>Описание</label>
+                        <textarea id="description" rows="3" required></textarea>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>Информация о стране</label>
+                        <textarea id="country_info" rows="2"></textarea>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Детали тура</label>
+                        <textarea id="tour_details" rows="2"></textarea>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Информация о визе</label>
+                        <textarea id="visa_info" rows="2" placeholder="Например: Виза по прибытию, $50"></textarea>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>Безопасность и документы (Legal)</label>
+                        <textarea id="legal_info" rows="2" placeholder="Страховка, разрешения, документы..."></textarea>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>Подготовка (Физ. форма, прививки)</label>
+                        <textarea id="preparation" rows="2" placeholder="Требуемый опыт, снаряжение..."></textarea>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn" id="modalSubmitBtn">Создать тур</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="adminpanel.js"></script>
+</body>
+</html>

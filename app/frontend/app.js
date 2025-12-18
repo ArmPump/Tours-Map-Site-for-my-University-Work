@@ -127,52 +127,8 @@ const translations = {
         imageUploaded: '✅ Изображение загружено!',
         imageError: '❌ Ошибка загрузки изображения',
         selectTour: 'Вы выбрали'
-    },
-    en: {
-        // Header
-        navHome: 'Home',
-        navTours: 'Tours',
-        navDestinations: 'Destinations',
-        profileBtnText: 'Profile',
-
-        // Auth
-        login: 'Login',
-        signup: 'Sign Up',
-        email: 'Email',
-        password: 'Password',
-        loginSubtitle: 'Login to continue',
-        signupSubtitle: 'Create new account',
-        noAccount: "Don't have an account?",
-        haveAccount: 'Already have an account?',
-        loginSuccess: 'Login successful!',
-        signupSuccess: 'Registration successful! Now login.',
-        loading: 'Loading...',
-        loggedOut: 'You have logged out',
-
-        // Profile
-        labelEmail: 'Email:',
-        labelUsername: 'Username:',
-        labelPassword: 'Password:',
-        avatarBtnText: 'Upload image',
-        changePasswordText: 'Change password',
-        toursTitle: 'Featured Tours',
-
-        // Country info
-        tours: 'tours',
-        tour: 'tour',
-        tours_2_4: 'tours',
-        noInfo: 'No information available',
-
-        // Messages
-        fillAllFields: 'Fill all fields!',
-        usernameSaved: '✅ Username saved!',
-        enterNewPassword: 'Enter new password:',
-        passwordChanged: '✅ Password changed successfully!',
-        passwordTooShort: '❌ Password must be at least 8 characters',
-        imageUploaded: '✅ Image uploaded!',
-        imageError: '❌ Error uploading image',
-        selectTour: 'You selected'
     }
+
 };
 
 // ============ MOCK ДАННЫЕ ТУРОВ С ПРИВЯЗКОЙ К СТРАНАМ ============
@@ -451,11 +407,25 @@ const colorScale = d3.scaleOrdinal().range(vibrantMapColors);
 
 // ============ ФУНКЦИЯ ПОДСЧЕТА ТУРОВ ПО СТРАНЕ ============
 function getToursCountByCountry(countryCode) {
-    if (!tours || tours.length === 0) {
-        // Если туры еще не загружены, используем mock данные
-        return mockTours.filter(tour => tour.country_code === countryCode).length;
+    // Если массив tours не инициализирован совсем - возвращаем 0
+    if (!tours) return 0;
+
+    // В массиве tours (с бэкенда) поле страны называется 'country_code' (3 буквы, например "RUS")
+    // Аргумент countryCode, который сюда передает D3.js, может быть цифровым ID или буквенным.
+    // Если приходит цифровой ID (из GeoJSON), конвертируем его
+
+    let codeToSearch = countryCode;
+
+    // Если countryCode - число или цифровая строка (например "643" для России)
+    // нам нужно превратить его в "RUS", чтобы найти в базе
+    if (!isNaN(countryCode)) {
+        codeToSearch = getCountryCode(countryCode); // Функция конвертации (она у тебя есть выше)
     }
-    return tours.filter(tour => tour.country_code === countryCode).length;
+
+    if (!codeToSearch) return 0;
+
+    // Фильтруем реальный массив tours
+    return tours.filter(tour => tour.country_code === codeToSearch).length;
 }
 
 // ============ ФУНКЦИЯ СКЛОНЕНИЯ СЛОВА "ТУР" ============
@@ -690,7 +660,23 @@ function loadProfileData() {
     } else {
         document.getElementById('profileAvatarImage').style.display = 'none';
     }
+        // Показать кнопку админ‑панели только админу
+    const adminBtn = document.getElementById('adminPanelBtn');
+    if (adminBtn) {
+        const email = localStorage.getItem('email');
+        adminBtn.style.display = (email === 'admin@zhukovsky.com') ? 'flex' : 'none';
+    }
 }
+
+function openAdminPanel() {
+    const email = localStorage.getItem('email');
+    if (email === 'admin@zhukovsky.com') {
+        window.location.href = 'adminpanel.html';
+    } else {
+        alert('⛔ Доступ только для администратора');
+    }
+}
+
 
 // ============ РЕДАКТИРОВАНИЕ ИМЕНИ ПОЛЬЗОВАТЕЛЯ ============
 function editUsername() {
@@ -842,28 +828,50 @@ function formatPrice(price) {
     }).format(price);
 }
 
-function selectTour(tourId) {
-    const tour = mockTours.find(t => t.id === tourId);
-    if (!tour) return;
+async function selectTour(tourId) {
+    // 1. Сначала ищем в уже загруженных данных (из бекенда)
+    let tour = tours.find(t => t.id == tourId);
 
-    // Закрываем модалку со странами если открыта
-    const countryModal = document.getElementById('countryToursModal');
-    if (countryModal) {
-        closeCountryToursModal();
+    // 2. Если в общем списке не нашли, пробуем запросить конкретно этот тур у API
+    if (!tour) {
+        try {
+            console.log(`Тур ${tourId} не найден в кэше, запрашиваем у API...`);
+            tour = await TourAPI.getTourById(tourId);
+        } catch (error) {
+            console.error("Ошибка при загрузке тура:", error);
+        }
     }
 
-    // Создаем детальное модальное окно
+    // 3. Если API недоступен, ищем в моках (как запасной вариант)
+    if (!tour) {
+        tour = mockTours.find(t => t.id == tourId);
+    }
+
+    // Если всё равно не нашли — выходим
+    if (!tour) {
+        console.error("Тур не найден нигде:", tourId);
+        return;
+    }
+
+    // --- ДАЛЕЕ КОД ОТРИСОВКИ ОКНА (Оставляем как было, но используем найденный tour) ---
+
+    // Удаляем старое окно если есть
+    const countryModal = document.getElementById('countryToursModal');
+    // Не закрываем карусель стран, открываем поверх или вместо?
+    // Обычно детальное окно открывается поверх.
+
+    // Создаем модальное окно
     const modal = document.createElement('div');
     modal.id = 'tourDetailModal';
     modal.className = 'tour-detail-modal';
 
-    // Иконки SVG для блоков
+    // Иконки
     const icons = {
-        details: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
-        visa: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M7 15h0M2 9.5h20"/></svg>',
-        legal: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
-        prep: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></svg>',
-        country: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>'
+        details: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`,
+        visa: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M7 15h0M2 9.5h20"/></svg>`,
+        legal: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
+        prep: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></svg>`,
+        country: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`
     };
 
     modal.innerHTML = `
@@ -873,7 +881,7 @@ function selectTour(tourId) {
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
 
-            <!-- Hero Section с картинкой и заголовком -->
+            <!-- Hero Section -->
             <div class="tour-hero">
                 <img src="${tour.image_url}" alt="${tour.destination}" class="tour-hero-image">
                 <div class="tour-hero-content">
@@ -890,78 +898,77 @@ function selectTour(tourId) {
                         </div>
                     </div>
                     <div class="tour-hero-price">
-                        <span class="price-label">${currentLang === 'ru' ? 'Стоимость участия' : 'Tour Price'}</span>
+                        <span class="price-label">${currentLang === 'ru' ? 'Стоимость тура' : 'Tour Price'}</span>
                         <div class="price-value">${formatPrice(tour.price)}</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Bento Grid - Сетка с информацией -->
+            <!-- Bento Grid - Информация -->
             <div class="tour-grid-container">
-
-                <!-- Блок 1: Описание (Широкий) -->
+                <!-- 1. Описание программы (Wide) -->
                 <div class="info-card card-wide">
                     <div class="info-card-header">
                         <div class="info-icon">${icons.details}</div>
-                        <div class="info-title">${currentLang === 'ru' ? 'О программе' : 'About Program'}</div>
+                        <div class="info-title">${currentLang === 'ru' ? 'О Программе' : 'About Program'}</div>
                     </div>
-                    <div class="info-text">${tour.tour_details}</div>
+                    <div class="info-text">${tour.tour_details || tour.description}</div>
                 </div>
 
-                <!-- Блок 2: О стране (Обычный) -->
+                <!-- 2. Локация (Small) -->
                 <div class="info-card">
                     <div class="info-card-header">
                         <div class="info-icon">${icons.country}</div>
                         <div class="info-title">${currentLang === 'ru' ? 'Локация' : 'Location'}</div>
                     </div>
-                    <div class="info-text">${tour.country_info}</div>
+                    <div class="info-text">${tour.country_info || '...'}</div>
                 </div>
 
-                <!-- Блок 3: Подготовка (Широкий) -->
+                <!-- 3. Подготовка (Wide) -->
                 <div class="info-card card-wide">
                     <div class="info-card-header">
                         <div class="info-icon">${icons.prep}</div>
                         <div class="info-title">${currentLang === 'ru' ? 'Подготовка' : 'Preparation'}</div>
                     </div>
-                    <div class="info-text">${tour.preparation}</div>
+                    <div class="info-text">${tour.preparation || '...'}</div>
                 </div>
 
-                <!-- Блок 4: Виза (Обычный) -->
+                <!-- 4. Виза (Small) -->
                 <div class="info-card">
                     <div class="info-card-header">
                         <div class="info-icon">${icons.visa}</div>
                         <div class="info-title">${currentLang === 'ru' ? 'Виза' : 'Visa Info'}</div>
                     </div>
-                    <div class="info-text">${tour.visa_info}</div>
+                    <div class="info-text">${tour.visa_info || '...'}</div>
                 </div>
 
-                <!-- Блок 5: Юридическое (На всю ширину) -->
+                <!-- 5. Безопасность (Full Width) -->
                 <div class="info-card card-full">
                     <div class="info-card-header">
                         <div class="info-icon">${icons.legal}</div>
-                        <div class="info-title">${currentLang === 'ru' ? 'Безопасность и документы' : 'Safety & Legal'}</div>
+                        <div class="info-title">${currentLang === 'ru' ? 'Безопасность и Документы' : 'Safety & Legal'}</div>
                     </div>
-                    <div class="info-text" style="opacity: 0.6; font-size: 14px;">${tour.legal_info}</div>
+                    <div class="info-text" style="opacity: 0.6; font-size: 14px;">${tour.legal_info || '...'}</div>
                 </div>
-
             </div>
 
-            <!-- Футер с кнопкой -->
+            <!-- Footer -->
             <div class="tour-detail-footer">
-                <button class="book-btn" onclick="alert('${currentLang === 'ru' ? 'Функция бронирования скоро появится!' : 'Booking coming soon!'}')">
-                    ${currentLang === 'ru' ? 'Забронировать место' : 'Book Now'} →
+                <button class="book-btn" onclick="alert('${currentLang === 'ru' ? 'Бронирование скоро будет доступно!' : 'Booking coming soon!'}')">
+                    ${currentLang === 'ru' ? 'Забронировать место' : 'Book Now'}
                 </button>
             </div>
         </div>
     `;
 
     document.body.appendChild(modal);
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden'; // Блокируем скролл фона
 
     setTimeout(() => {
         modal.classList.add('show');
     }, 10);
 }
+
 
 
 function closeTourDetailModal() {
@@ -1233,7 +1240,9 @@ function resetZoom() {
 }
 
 // ============ ИНИЦИАЛИЗАЦИЯ ============
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', async () => {
+    await fetchToursFromApi();
+    initMap();
     checkAuth();
     loadMap();
     updateAllTranslations();
@@ -1271,21 +1280,37 @@ document.head.appendChild(style);
 // ============ МОДАЛЬНОЕ ОКНО С ТУРАМИ СТРАНЫ ============
 let currentCountryCarouselIndex = 0;
 
+// Замените старую функцию openCountryToursModal на эту:
 async function openCountryToursModal(countryCode, x, y) {
+    try {
+        // 1. ПРИНУДИТЕЛЬНО загружаем свежие данные с бэкенда
+        const freshTours = await TourAPI.getAllTours();
+        if (freshTours && Array.isArray(freshTours)) {
+            tours = freshTours; // Обновляем глобальную переменную
+        }
+    } catch (error) {
+        console.warn('Не удалось загрузить свежие туры, используем кэш:', error);
+    }
+
+    // 2. Фильтруем уже ОБНОВЛЕННЫЙ список
     let countryTours = tours.filter(tour => tour.country_code === countryCode);
 
-    // Если туры еще не загружены, используем mock
+    // Если API не ответил и массив пуст — только тогда берем mock (запасной вариант)
     if (!tours || tours.length === 0) {
         countryTours = mockTours.filter(tour => tour.country_code === countryCode);
     }
 
+    // Если туров нет — ничего не открываем
     if (countryTours.length === 0) return;
+
+    // --- Дальше код отрисовки окна (без изменений) ---
     const countryName = countryNames[currentLang][countryCode] || countryCode;
 
     // Эффект размытия карты
-    document.getElementById('mapContainer').classList.add('blurred');
+    const mapContainer = document.getElementById('mapContainer');
+    if (mapContainer) mapContainer.classList.add('blurred');
 
-    // Удаляем старое окно если есть
+    // Удаляем старое окно
     const oldModal = document.getElementById('countryToursModal');
     if (oldModal) oldModal.remove();
 
@@ -1293,34 +1318,24 @@ async function openCountryToursModal(countryCode, x, y) {
     modal.id = 'countryToursModal';
     modal.className = 'country-tours-modal';
 
-    // Умное позиционирование
+    // Позиционирование
     const modalWidth = 500;
     const windowWidth = window.innerWidth;
     const windowHeight = window.innerHeight;
 
-    // Центрируем по горизонтали относительно клика, но не даем уйти за край
     let modalX = x + 40;
-    let modalY = y - 100; // Чуть выше клика
+    let modalY = y - 100;
 
-    // Если клик слишком близко к правому краю
-    if (modalX + modalWidth > windowWidth - 20) {
-        modalX = x - modalWidth - 40;
-    }
-    // Если клик слишком низко
-    if (modalY + 450 > windowHeight) {
-        modalY = windowHeight - 470;
-    }
-    // Если клик слишком высоко
-    if (modalY < 20) {
-        modalY = 20;
-    }
+    if (modalX + modalWidth > windowWidth - 20) modalX = x - modalWidth - 40;
+    if (modalY + 450 > windowHeight) modalY = windowHeight - 470;
+    if (modalY < 20) modalY = 20;
 
     modal.style.left = `${Math.max(20, Math.min(modalX, windowWidth - modalWidth - 20))}px`;
     modal.style.top = `${modalY}px`;
 
     currentCountryCarouselIndex = 0;
 
-    // Обновленный HTML с новыми SVG и структурой
+    // HTML контент
     modal.innerHTML = `
         <div class="country-tours-header">
             <h3>${countryName}</h3>
@@ -1369,10 +1384,11 @@ async function openCountryToursModal(countryCode, x, y) {
 
     setTimeout(() => {
         modal.classList.add('show');
-        // Инициализируем ползунок карусели стран
         updateCarouselProgress('countryCarouselProgress', 0, countryTours.length);
     }, 10);
 }
+
+
 
 function closeCountryToursModal() {
     const modal = document.getElementById('countryToursModal');
@@ -1490,6 +1506,29 @@ function hideCountryTooltip(event, d) {
 
 // ============ API КОНФИГУРАЦИЯ ============
 const API_BASE_URL = 'http://localhost:8000'; // Ваш FastAPI backend
+
+async function fetchToursFromApi() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/tours`);
+        if (!response.ok) throw new Error('Failed to fetch');
+        const data = await response.json();
+
+        // Обновляем глобальную переменную tours
+        tours = data.tours;
+
+        console.log("Туры загружены из БД:", tours.length);
+
+        // Перерисовываем карту, если она уже загружена
+        if (typeof updateMapColors === 'function') {
+            updateMapColors();
+        }
+    } catch (error) {
+        console.error("Ошибка загрузки туров, используем моки:", error);
+        // Если база не отвечает, оставляем старые mockTours (если они были)
+        tours = mockTours || [];
+    }
+}
+
 
 // ============ API ФУНКЦИИ ============
 class TourAPI {
@@ -1666,3 +1705,145 @@ renderMap = function() {
 
 
 
+// Добавьте эту функцию в ваш существующий app.js
+
+// ============ ОБНОВЛЕННАЯ ФУНКЦИЯ ОТКРЫТИЯ ПРОФИЛЯ ============
+function openProfileModal() {
+    document.getElementById('profileModal').classList.add('show');
+    document.getElementById('mapContainer').classList.add('blurred');
+
+    loadProfileData();
+    loadTours();
+
+    // Проверяем, является ли пользователь админом
+    checkAdminAccess();
+}
+
+// ============ ПРОВЕРКА АДМИН ДОСТУПА ============
+function checkAdminAccess() {
+    const email = localStorage.getItem('email');
+    const username = localStorage.getItem('username');
+
+    // Проверяем, является ли пользователь админом
+    const isAdmin = email === 'admin@zhukovsky.com';
+
+    // Ищем секцию с кнопкой смены пароля
+    const passwordSection = document.querySelector('.profile-info-item:has(.change-password-btn)');
+
+    if (isAdmin && passwordSection) {
+        // Создаем кнопку админ-панели, если её еще нет
+        if (!document.getElementById('adminPanelBtn')) {
+            const adminButton = document.createElement('div');
+            adminButton.className = 'profile-info-item';
+            adminButton.innerHTML = `
+                <span class="profile-info-label">Администратор:</span>
+                <button class="change-password-btn" id="adminPanelBtn" onclick="openAdminPanel()"
+                        style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                        <path d="M2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                    </svg>
+                    <span>Открыть админ-панель</span>
+                </button>
+            `;
+
+            // Вставляем после кнопки смены пароля
+            passwordSection.parentNode.insertBefore(adminButton, passwordSection.nextSibling);
+
+            // Добавляем бейдж "ADMIN" рядом с именем
+            const usernameInput = document.getElementById('profileUsernameInput');
+            if (usernameInput && !document.getElementById('adminBadge')) {
+                const adminBadge = document.createElement('span');
+                adminBadge.id = 'adminBadge';
+                adminBadge.style.cssText = `
+                    display: inline-block;
+                    padding: 4px 12px;
+                    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+                    color: white;
+                    border-radius: 12px;
+                    font-size: 11px;
+                    font-weight: 700;
+                    letter-spacing: 0.5px;
+                    margin-left: 12px;
+                    vertical-align: middle;
+                `;
+                adminBadge.textContent = 'ADMIN';
+                usernameInput.parentNode.appendChild(adminBadge);
+            }
+        }
+    }
+}
+
+// ============ ОТКРЫТИЕ АДМИН-ПАНЕЛИ ============
+function openAdminPanel() {
+    // Закрываем модалку профиля
+    closeProfileModal();
+
+    // Перенаправляем на страницу админ-панели
+    window.location.href = 'adminpanel.html';
+}
+
+// ============ ОБНОВЛЕННАЯ ФУНКЦИЯ АВТОРИЗАЦИИ ============
+async function handleAuthSubmit(event) {
+    event.preventDefault();
+
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const submitBtn = document.getElementById('submitBtn');
+    const t = translations[currentLang];
+
+    if (!email || !password) {
+        alert(t.fillAllFields);
+        return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = t.loading;
+
+    try {
+        if (isLoginMode) {
+            // ВХОД
+            const user = await UserAPI.getUserByEmail(email);
+
+            if (user) {
+                localStorage.setItem('username', user.username);
+                localStorage.setItem('email', user.email);
+                localStorage.setItem('userId', user.id);
+
+                // Проверяем, является ли пользователь админом
+                if (email === 'admin@zhukovsky.com') {
+                    alert('🎉 ' + t.loginSuccess + '\n\n👑 Добро пожаловать, администратор!');
+                } else {
+                    alert(t.loginSuccess);
+                }
+
+                closeAuthModal();
+                checkAuth();
+            } else {
+                alert('Пользователь не найден');
+            }
+
+        } else {
+            // РЕГИСТРАЦИЯ
+            const username = email.split('@')[0];
+
+            const userData = {
+                username: username,
+                email: email,
+                password: password,
+                avatar: null
+            };
+
+            const newUser = await UserAPI.register(userData);
+
+            alert(t.signupSuccess);
+            toggleAuthMode();
+        }
+
+    } catch (error) {
+        alert(error.message || 'Ошибка авторизации');
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = isLoginMode ? t.login : t.signup;
+    }
+}

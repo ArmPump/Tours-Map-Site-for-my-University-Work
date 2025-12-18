@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session, joinedload
-from typing import List, Optional
+from typing import List, Optional, Any
 from ..models.tours import Tour
 from ..models.categories import Category
 from ..schemas.tours import TourCreate
@@ -32,6 +32,12 @@ class TourRepository:
         self.db.commit()
         self.db.refresh(db_tour)
         return db_tour
+
+    # def update(self, tour_id: int, tour_data: dict[str, Any] ) -> Tour:
+    #     tour = self.get_by_id(tour_id)
+    #     if not tour:
+    #         raise
+
 
     def delete(self, tour_id: int) -> bool:
         tour = self.get_by_id(tour_id)
