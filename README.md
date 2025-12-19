@@ -1,3 +1,5 @@
+# При возникновении проблем написать в мой телеграмм https://t.me/Bedrosovichhh
+
 # Zhukovsky Site
 
 Веб-приложение для управления турами с интерактивной картой мира на FastAPI.
@@ -68,8 +70,9 @@ python app/backend/seed_data.py
 python app/backend/run.py
 ```
 
-Приложение будет доступно по адресу:
-- **Главная страница**: http://localhost:8000
+ЗАХОД НА САЙТ КОГДА BACKEND УЖЕ ВКЛЮЧЕН:
+- **Чтобы запустить frontend просто в редакторе кода, либо на рабочем столе нажимаем index.html и открываем его в браузере**
+- **Главная страница backend**: http://localhost:8000
 - **API документация (Swagger)**: http://localhost:8000/docs
 - **API документация (ReDoc)**: http://localhost:8000/redoc
 
@@ -217,5 +220,4 @@ python app/backend/run.py
 MIT License
 
 ## Автор
-
 ArmPump - [GitHub](https://github.com/ArmPump)
