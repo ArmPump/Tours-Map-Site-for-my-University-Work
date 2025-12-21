@@ -70,7 +70,7 @@ class TourService:
         tour = self.tour_repository.create(tour_data)
         return TourResponse.model_validate(tour)
 
-    def delete_tour(self, tour_id: id) -> dict:
+    def delete_tour(self, tour_id: int) -> dict:
         deleted = self.tour_repository.delete(tour_id)
         if not deleted:
             raise HTTPException(
